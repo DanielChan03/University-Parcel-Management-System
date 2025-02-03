@@ -1,0 +1,91 @@
+{% extends "AdminBase.html" %}
+
+{% block title %}Add User - Admin Dashboard{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='AdminAddUser.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="add-user-container">
+    <h1>Add User</h1>
+    <!-- Add User Form -->
+    <form method="POST" action="{{ url_for('admin.add_user') }}">
+        <!-- User Type Dropdown -->
+        <div class="form-group">
+            <label for="userType">User Type:</label>
+            <select id="userType" name="userType" required>
+                <option value="ParcelManager">Parcel Manager</option>
+                <option value="Courier">Courier</option>
+            </select>
+        </div>
+
+        <!-- Name Field -->
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <!-- Email Field -->
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <!-- Contact Field -->
+        <div class="form-group">
+            <label for="contact">Contact:</label>
+            <input type="text" id="contact" name="contact" required>
+        </div>
+
+        <!-- Work Branch Field (for Parcel Manager) -->
+        <div class="form-group" id="workBranchGroup">
+            <label for="workBranch">Work Branch:</label>
+            <input type="text" id="workBranch" name="workBranch">
+        </div>
+
+        <!-- Assigned Parcels Field (for Courier) -->
+        <div class="form-group" id="assignedParcelsGroup">
+            <label for="assignedParcels">Assigned Parcels:</label>
+            <input type="number" id="assignedParcels" name="assignedParcels" value="0">
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-submit">Add User</button>
+    </form>
+</div>
+
+<script>
+    // Show/hide fields based on user type
+    const userType = document.getElementById('userType');
+    const workBranchGroup = document.getElementById('workBranchGroup');
+    const assignedParcelsGroup = document.getElementById('assignedParcelsGroup');
+
+    userType.addEventListener('change', function() {
+        if (userType.value === 'ParcelManager') {
+            workBranchGroup.style.display = 'block';
+            assignedParcelsGroup.style.display = 'none';
+        } else if (userType.value === 'Courier') {
+            workBranchGroup.style.display = 'none';
+            assignedParcelsGroup.style.display = 'block';
+        }
+    });
+
+    // Initialize visibility on page load
+    window.onload = function() {
+        if (userType.value === 'ParcelManager') {
+            workBranchGroup.style.display = 'block';
+            assignedParcelsGroup.style.display = 'none';
+        } else if (userType.value === 'Courier') {
+            workBranchGroup.style.display = 'none';
+            assignedParcelsGroup.style.display = 'block';
+        }
+    };
+</script>
+{% endblock %}

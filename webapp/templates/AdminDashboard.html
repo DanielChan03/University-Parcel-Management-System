@@ -1,0 +1,47 @@
+{% extends "AdminBase.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='AdminDashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h1>Admin Dashboard</h1>
+</div>
+
+<div class="dashboard-sections">
+    <!-- Welcome Card -->
+    <div class="welcome-card">
+        <h2>Welcome, {{ admin.Admin_Name }}!</h2>
+        <img src="{{ url_for('static', filename='admin_welcome.png') }}" alt="Welcome Image" class="welcome-image">
+    </div>
+
+    <!-- Notification Card -->
+    <div class="notification-card">
+        <h2>Notification:</h2>
+        <ul>
+            {% for user_id, feedback in notifications.items() %}
+                <li>New feedback from {{ user_id }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="dashboard-sections">
+    <!-- Parcel Status Card -->
+    <div class="status-card">
+        <h2>Parcel Status:</h2>
+        <p>Number of Parcels Receive: {{ total_received_parcels }}</p>
+        <p>Number of Parcels Delivered: {{ total_delivered_parcels }}</p>
+        <p>Number of Parcels Pending: {{ pending_parcels }}</p>
+    </div>
+
+    <!-- Feedback Card -->
+    <div class="feedback-card">
+        <h2>Feedbacks</h2>
+        <p>Not responded feedback: {{ not_responded_feedback }}</p>
+    </div>
+</div>
+{% endblock %}

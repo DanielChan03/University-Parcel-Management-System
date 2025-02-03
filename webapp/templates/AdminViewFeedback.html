@@ -1,0 +1,42 @@
+{% extends "AdminBase.html" %}
+
+{% block title %}Admin - View Feedback{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='AdminViewFeedback.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="feedbacks-container">
+    <h1>All Feedback</h1>
+
+    {% if feedbacks %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>User Name</th>
+                    <th>Feedback Type</th>
+                    <th>Content</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user_id, feedback in feedbacks.items() %}
+                    <tr>
+                        <td>{{ user_id }}</td>
+                        <td>{{ feedback['name'] }}</td>
+                        <td>{{ feedback['feedback_type'] }}</td>
+                        <td>{{ feedback['content'] }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.view_feedback', user_id=user_id) }}" class="btn btn-primary">Respond</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No feedback available.</p>
+    {% endif %}
+</div>
+{% endblock %}

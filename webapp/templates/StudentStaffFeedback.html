@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Feedback - TrackIQ{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='Feedback.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Left: Feedback List -->
+    <div class="feedback-list">
+        <h2>Feedback History</h2>
+        <div id="feedbackContainer">
+            <div class="feedback-item">
+                <strong>General</strong>
+                <p>Great service, very satisfied!</p>
+                <small>Admin: Thank you for your feedback!</small>
+            </div>
+            <div class="feedback-item">
+                <strong>Complaint</strong>
+                <p>Delivery took longer than expected.</p>
+                <small>Admin: Apologies for the delay, we will improve our service.</small>
+            </div>
+            <div class="feedback-item pending">
+                <strong>Suggestion</strong>
+                <p>Would be great to have more delivery time slots.</p>
+                <small>Pending response...</small>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Right: Feedback Form -->
+    <div class="feedback-form">
+        <h2>Submit Feedback</h2>
+        <form action="{{ url_for('views.submit_feedback') }}" method="POST">
+            <select name="feedbackType">
+                <option value="General">General</option>
+                <option value="Suggestion">Suggestion</option>
+                <option value="Complaint">Complaint</option>
+            </select>
+            <textarea name="feedbackContent" placeholder="Enter your feedback..." required></textarea>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

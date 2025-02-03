@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Send Parcel{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='SendParcel.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="send-parcel-container">
+    <form action="{{ url_for('views.send_parcel') }}" method="POST">
+        <h2>Send a Parcel</h2>
+
+        <!-- Sender Details -->
+        <label for="sender_name">Sender's Name</label>
+        <input type="text" id="sender_name" name="sender_name" value="{{ user.User_Name }}" readonly>
+
+        <label for="sender_university">Sender's University</label>
+        <input type="text" id="sender_university" name="sender_university" value="{{ sender_university_name }}" readonly>
+
+        <!-- Receiver Details -->
+        <label for="receiver_input">Receiver's Name or User ID</label>
+        <input type="text" id="receiver_input" name="receiver_input" list="receiver_list" required>
+        
+        <datalist id="receiver_list">
+            {% for receiver in all_users %}
+                <option value="{{ receiver.User_Name }}" data-user-id="{{ receiver.User_ID }}" data-university="{{ receiver.university.University_Name }}"></option>
+                <option value="{{ receiver.User_ID }}" data-user-name="{{ receiver.User_Name }}" data-university="{{ receiver.university.University_Name }}"></option>
+            {% endfor %}
+        </datalist>
+
+        <label for="receiver_university">Receiver's University</label>
+        <input type="text" id="receiver_university" name="receiver_university" required readonly>
+
+        <!-- Hidden Fields -->
+        <input type="hidden" name="sender_user_id" value="{{ user.User_ID }}">
+        <input type="hidden" id="receiver_user_id" name="receiver_user_id">
+
+        <!-- Send Parcel Button -->
+        <button type="submit">Send Parcel</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('receiver_input').addEventListener('input', function() {
+        const receiverInput = this.value;
+        const receiverOptions = document.querySelectorAll('#receiver_list option');
+
+        let matchedOption = [...receiverOptions].find(option => option.value === receiverInput);
+        
+        if (matchedOption) {
+            document.getElementById('receiver_user_id').value = matchedOption.getAttribute('data-user-id');
+            document.getElementById('receiver_university').value = matchedOption.getAttribute('data-university');
+        }
+    });
+</script>
+{% endblock %}

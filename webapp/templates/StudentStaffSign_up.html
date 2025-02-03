@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up{% endblock %}
+
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="signup-container">
+    <form method="POST" class="signup-form">
+        <h3 class="form-title">Sign Up</h3>
+        <div class="form-group">
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address" required />
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required />
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" id="password1" name="password1" placeholder="Create a password" required />
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm your password" required />
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter your contact number" required />
+        </div>
+        <div class="form-group" id="userType-label">
+            <label class="radio-label" for="userType">Are you a student or staff?</label>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="student" name="userType" value="Student" required />
+                    <label for="student">Student</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="staff" name="userType" value="Staff" required />
+                    <label for="staff">Staff</label>
+                </div>
+            </div>
+        </div>        
+        <div class="form-group">
+            <select class="form-control" id="university" name="university" required>
+                <option value="" disabled selected>-- Select Your University --</option>
+                {% for uni in universities %}
+                    <option value="{{ uni.University_ID }}">{{ uni.University_Name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-submit">Sign Up</button>
+    </form>
+</div>
+{% endblock %}

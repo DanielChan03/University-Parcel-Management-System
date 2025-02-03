@@ -1,0 +1,164 @@
+{% extends "AdminBase.html" %}
+
+{% block title %}User Management - Admin Dashboard{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='AdminManageUser.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="manage-users-container">
+    <h1>User Management</h1>
+    
+    <a href="{{ url_for('admin.add_user') }}" class="btn btn-add">Add User</a>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <input type="text" id="userSearch" placeholder="Search by User ID or Name" class="search-input" value="{{ search_term }}">
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- User Table -->
+    <div class="user-table-container">
+        <table class="user-table">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Contact</th>
+                    <th>User Type</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                {% for user in users %}
+                <tr class="user-row" data-id="{{ user.User_ID }}">
+                    <td class="editable" data-field="User_ID">{{ user.User_ID }}</td>
+                    <td class="editable" data-field="User_Name">{{ user.User_Name }}</td>
+                    <td class="editable" data-field="User_Email">{{ user.User_Email }}</td>
+                    <td class="editable" data-field="User_Contact">{{ user.User_Contact }}</td>
+                    <td>{{ user.User_Type }}</td>
+                    <td>
+                        <span class="status {{ user.Login_Status | lower }}">{{ user.Login_Status }}</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-edit" onclick="enableEdit(this)">Edit</button>
+                        <button class="btn btn-delete" onclick="deleteUser('{{ user.User_ID }}')">Delete</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Enable inline editing
+    function enableEdit(button) {
+        const row = button.closest('tr');
+        const editableCells = row.querySelectorAll('.editable');
+
+        editableCells.forEach(cell => {
+            const originalValue = cell.innerText;
+            cell.innerHTML = `<input type="text" value="${originalValue}" data-original="${originalValue}" data-field="${cell.getAttribute('data-field')}">`;
+        });
+
+        // Change the Edit button to a Save button
+        button.innerText = 'Save';
+        button.setAttribute('onclick', 'saveRow(this)');
+    }
+
+    // Save the edited row
+    function saveRow(button) {
+        const row = button.closest('tr');
+        const userId = row.getAttribute('data-id');
+        const inputs = row.querySelectorAll('input');
+        const data = {};
+
+        inputs.forEach(input => {
+            data[input.getAttribute('data-field')] = input.value;
+        });
+
+        fetch(`/admin/update-user/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                // Update the table row with the new values
+                inputs.forEach(input => {
+                    const cell = input.closest('td');
+                    cell.innerText = input.value;
+                });
+
+                // Change the Save button back to an Edit button
+                button.innerText = 'Edit';
+                button.setAttribute('onclick', 'enableEdit(this)');
+
+                // Show a success message
+                alert('User updated successfully!');
+            } else {
+                alert('Failed to update user: ' + result.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while updating the user.');
+        });
+    }
+
+    // Delete a user
+    function deleteUser(userId) {
+        if (confirm('Are you sure you want to delete this user?')) {
+            fetch(`/admin/delete-user/${userId}`, {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    // Remove the row from the table
+                    document.querySelector(`tr[data-id="${userId}"]`).remove();
+                    alert('User deleted successfully!');
+                } else {
+                    alert('Failed to delete user: ' + result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the user.');
+            });
+        }
+    }
+
+    // Search functionality
+    document.getElementById('userSearch').addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const rows = document.querySelectorAll('.user-row');
+
+        rows.forEach(row => {
+            const name = row.querySelector('td:nth-child(2)').innerText.toLowerCase();
+            const id = row.querySelector('td:nth-child(1)').innerText.toLowerCase();
+
+            if (name.includes(searchTerm) || id.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}

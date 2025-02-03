@@ -1,0 +1,58 @@
+{% extends "AdminBase.html" %}
+
+{% block title %}Generate Report - Admin Dashboard{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='AdminGenerateReport.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="generate-report-container">
+        <h1>Generate Report</h1>
+
+        <!-- Report Form -->
+        <div class="report-form-container">
+            <form action="{{ url_for('admin.generate_report') }}" method="POST" class="generate-report-form">
+                <div class="form-group">
+                    <label for="report-type">Report Type</label>
+                    <select id="report-type" name="report_type" class="form-control" required>
+                        <option value="monthly">Monthly Summary</option>
+                        <option value="courier-activity">Courier Activity</option>
+                        <option value="locker-usage">Locker Usage</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="month">Month</label>
+                    <select id="month" name="month" class="form-control" required>
+                        <option value="01">January</option>
+                        <option value="02">February</option>
+                        <option value="03">March</option>
+                        <option value="04">April</option>
+                        <option value="05">May</option>
+                        <option value="06">June</option>
+                        <option value="07">July</option>
+                        <option value="08">August</option>
+                        <option value="09">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="year">Year</label>
+                    <select id="year" name="year" class="form-control" required>
+                        {% for year in range(2020, 2031) %}
+                            <option value="{{ year }}">{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn-submit">Generate Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

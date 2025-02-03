@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="carousel">
+        <div class="carousel-track-container">
+            <ul class="carousel-track">
+                <li class="carousel-slide">
+                    <img src="{{ url_for('static', filename='Smart-Locker_1.jpg') }}" alt="image 1">
+                </li>
+                <li class="carousel-slide">
+                    <img src="{{ url_for('static', filename='PP_SafeDelivery_FB_8.jpg') }}" alt="image 2">
+                </li>
+                <li class="carousel-slide">
+                    <img src="{{ url_for('static', filename='Pick-up-and-delivery-services-image.jpeg') }}" alt="image 3">
+                </li>
+            </ul>
+        </div>
+        <div class="carousel-nav">
+            <button class="carousel-dot current-dot"></button>
+            <button class="carousel-dot"></button>
+            <button class="carousel-dot"></button>
+        </div>
+    </div>
+    <div class="tracking-section">
+        <h1>Track Your Shipment</h1>
+        <input type="text" id="tracking-input" placeholder="Enter your tracking number(s)">
+        <button id="track-btn">Track</button>
+    </div>
+    <div class="actions">
+        <div class="action">
+            <h3>Ship Now</h3>
+            <p>Find the right service</p>
+        </div>
+        <div class="action">
+            <h3>Get a Quote</h3>
+            <p>Estimate cost to share and compare</p>
+        </div>
+        <div class="action">
+            <h3>Request a Business Account</h3>
+            <p>Shipping regularly or frequently? Learn about volume discounts</p>
+        </div>
+    </div>
+{% endblock %}

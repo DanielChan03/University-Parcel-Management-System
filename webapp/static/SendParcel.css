@@ -1,0 +1,75 @@
+/* Scope styles only to SendParcel.html */
+.send-parcel-container {
+    background-color: #f4f4f4;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Form Container */
+.send-parcel-container form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Header */
+.send-parcel-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Label Styling */
+.send-parcel-container label {
+    font-size: 16px;
+    margin: 10px 0 5px;
+    display: block;
+    color: #555;
+}
+
+/* Input and Select Fields */
+.send-parcel-container input[type="text"], 
+.send-parcel-container select {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0 15px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Button Styling */
+.send-parcel-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.send-parcel-container button:hover {
+    background-color: #45a049;
+}
+
+/* Information Text */
+.send-parcel-container p {
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .send-parcel-container form {
+        width: 90%;
+    }
+}

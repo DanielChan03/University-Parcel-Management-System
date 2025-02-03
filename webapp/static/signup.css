@@ -1,0 +1,131 @@
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f7fa;
+    padding: 3rem;
+}
+
+.signup-form {
+    background-color: #ffffff;
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+}
+
+.form-title {
+    font-size: 2rem;
+    color: #333333;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    color: #555;
+    background-color: #f9f9f9;
+    transition: border 0.3s ease;
+}
+
+.form-control:focus {
+    border: 1px solid #49b2c6;
+    outline: none;
+    background-color: #fff;
+}
+
+.radio-group {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.radio-label {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 0.5rem;
+}
+
+.radio-group label {
+    font-size: 1rem;
+    color: #333;
+    cursor: pointer;
+}
+
+select.form-control {
+    appearance: none;
+    background: url("data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path fill='%23999999' d='M6 8l4 4 4-4H6z'/></svg>")
+        no-repeat right 10px center;
+    background-color: #f9f9f9;
+    background-size: 1rem;
+}
+
+.btn-submit {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    color: #fff;
+    background-color: #49b2c6;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.btn-submit:hover {
+    background-color: #3a92a1;
+}
+
+.signup-text {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 1rem;
+}
+
+.signup-text a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.signup-text a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .signup-container {
+        padding: 2rem;
+    }
+
+    .signup-form {
+        padding: 2rem;
+    }
+
+    .form-title {
+        font-size: 1.8rem;
+    }
+
+    .form-control {
+        font-size: 1rem;
+    }
+
+    .btn-submit {
+        font-size: 1rem;
+    }
+}

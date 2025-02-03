@@ -1,0 +1,114 @@
+/* Main content styles */
+.main {
+    padding: 2rem;
+    text-align: center;
+}
+
+.tracking-section {
+    background: #f8f8f8;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.tracking-section h1 {
+    margin-bottom: 1rem;
+    font-size: 2rem;
+}
+
+#tracking-input {
+    padding: 0.5rem;
+    width: 70%;
+    margin-right: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#track-btn {
+    padding: 0.5rem 1rem;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#track-btn:hover {
+    background: darkred;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.action {
+    background: #f8f8f8;
+    padding: 1rem;
+    border-radius: 10px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.action h3 {
+    color: red;
+    margin-bottom: 0.5rem;
+}
+
+/* Carousel container */
+.carousel {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+    overflow: hidden;
+}
+
+.carousel-track-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 100%;
+}
+
+.carousel-slide {
+    width: 100%;
+    height: 25%;
+    min-width: 100%;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.carousel-nav {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.carousel-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin: 0 5px;
+    background-color: #ddd;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.carousel-dot.current-dot {
+    background-color: #49b2c6;
+}
