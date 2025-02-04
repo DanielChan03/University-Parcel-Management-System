@@ -57,6 +57,7 @@ class StudentStaff(db.Model, UserMixin):
             return university.University_ID.split('UNI')[0] if university.University_ID else 'Unknown'
         return 'Unknown'
 
+
 # Parcel Manager Table
 class ParcelManager(db.Model, UserMixin):
     __tablename__ = 'parcel_manager'

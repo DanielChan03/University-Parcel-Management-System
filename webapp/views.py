@@ -10,7 +10,7 @@ views = Blueprint('views', __name__)
 @views.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
-    return render_template("home.html", user=current_user)
+    return render_template("StudentStaff/home.html", user=current_user)
 
 @views.route('/submit_feedback', methods=['GET', 'POST'])
 def submit_feedback():
@@ -33,7 +33,7 @@ def submit_feedback():
             
             flash('Your feedback has been submitted successfully.', 'success')
 
-    return render_template('StudentStaffFeedback.html')
+    return render_template('StudentStaff/StudentStaffFeedback.html')
 
 @views.route('/send_parcel', methods=['GET', 'POST'])
 @login_required
@@ -117,7 +117,7 @@ def send_parcel():
             return redirect(url_for('views.send_parcel'))
 
     return render_template(
-        'SendParcel.html',
+        'StudentStaff/SendParcel.html',
         user=sender,
         universities=universities,
         all_users=receiver_users,
@@ -152,7 +152,7 @@ def report_locker_issue():
 
     # GET method (Render the form page)
     lockers = SmartLocker.query.all()
-    return render_template('ReportLockerIssue.html', lockers=lockers)
+    return render_template('StudentStaff/ReportLockerIssue.html', lockers=lockers)
 
 
 

@@ -27,7 +27,7 @@ def login():
         else:
             flash('Email does not exist.', category='error')
 
-    return render_template("StudentStaffLogin.html", user=current_user)
+    return render_template("StudentStaff/StudentStaffLogin.html", user=current_user)
 
 # Student/Staff Logout
 @auth.route('/logout')
@@ -87,4 +87,4 @@ def sign_up():
             flash('Account created!', category='success')
             return redirect(url_for('views.home'))
 
-    return render_template("StudentStaffSign_up.html", universities=universities, user=current_user)
+    return render_template("StudentStaff/StudentStaffSign_up.html", universities=universities, user=current_user)

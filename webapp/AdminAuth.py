@@ -25,7 +25,7 @@ def admin_login():
         else:
             flash('Email does not exist.', category='error')
 
-    return render_template("AdminLogin.html")
+    return render_template("Admin/AdminLogin.html")
 
 # Admin Logout
 @admin_auth.route('/admin-logout')
@@ -33,4 +33,4 @@ def admin_login():
 def admin_logout():
     logout_user()
     flash('Logged out successfully.', category='success')
-    return redirect(url_for('admin_auth.admin_login'))
+    return redirect(url_for('Admin/admin_auth.admin_login'))

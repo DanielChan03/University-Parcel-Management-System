@@ -28,7 +28,7 @@ def admin_dashboard():
     not_responded_feedback = len(notifications)  # Number of feedbacks in session
 
     return render_template(
-        "AdminDashboard.html",
+        "Admin/AdminDashboard.html",
         admin=admin,
         notifications=notifications,
         total_received_parcels=total_received_parcels,
@@ -41,7 +41,7 @@ def admin_dashboard():
 @admin.route('/generate-report', methods=['GET'])
 @login_required
 def generate_report():
-    return render_template("AdminGenerateReport.html")
+    return render_template("Admin/AdminGenerateReport.html")
 
 # Manage Users
 @admin.route('/manage-users', methods=['GET', 'POST'])
@@ -63,7 +63,7 @@ def manage_users():
     else:
         users = StudentStaff.query.filter_by(University_ID=admin_uni_id).all()
 
-    return render_template('AdminManageUser.html', users=users, search_term=search_term)
+    return render_template('Admin/AdminManageUser.html', users=users, search_term=search_term)
 
 # Update User
 @admin.route('/update-user/<string:user_id>', methods=['POST'])
@@ -120,7 +120,7 @@ def delete_user(user_id):
 @login_required
 def view_feedback():
     feedbacks = session.get('feedbacks', {})
-    return render_template('AdminViewFeedback.html', feedbacks=feedbacks)
+    return render_template('Admin/AdminViewFeedback.html', feedbacks=feedbacks)
 
 # Add User
 @admin.route('/add-user', methods=['GET', 'POST'])
@@ -162,4 +162,4 @@ def add_user():
         flash('User added successfully!', 'success')
         return redirect(url_for('admin.manage_users'))
 
-    return render_template("AdminAddUser.html")
+    return render_template("Admin/AdminAddUser.html")

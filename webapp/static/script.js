@@ -1,3 +1,22 @@
+// Sidebar functionality
+const sidebar = document.querySelector('.sidebar');
+const toggleBtn = document.querySelector('.sidebar-toggle-btn');
+const closeBtn = document.querySelector('.sidebar-close-btn');
+const mainContent = document.querySelector('.main');
+
+// Open sidebar
+toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    mainContent.classList.toggle('shifted');
+});
+
+// Close sidebar
+closeBtn.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    mainContent.classList.remove('shifted');
+});
+
+// Parcel tracking button functionality
 document.getElementById("track-btn").addEventListener("click", function () {
     const trackingNumber = document.getElementById("tracking-input").value;
     if (trackingNumber) {
@@ -6,7 +25,8 @@ document.getElementById("track-btn").addEventListener("click", function () {
         alert("Please enter a tracking number.");
     }
 });
-// Select elements
+
+// Carousel functionality
 const track = document.querySelector('.carousel-track');
 const slides = Array.from(track.children);
 const dotsNav = document.querySelector('.carousel-nav');
@@ -59,4 +79,3 @@ setInterval(() => {
     moveToSlide(track, currentSlide, targetSlide);
     updateDots(currentDot, targetDot);
 }, 3000);
-
