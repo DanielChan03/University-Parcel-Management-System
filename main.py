@@ -8,8 +8,6 @@ import random
 
 app = create_app()
 
-import random
-
 if __name__ == '__main__':
     app.run()
     
