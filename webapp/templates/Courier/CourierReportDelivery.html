@@ -1,0 +1,78 @@
+{% extends "Courier/CourierBase.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report Delivery Issue</title>
+  <link rel="stylesheet" href="Couriercss/CourierReportDelivery.css">
+</head>
+<body>
+  <div class="container">
+    <div class="panel">
+      <h2>Report Delivery Issue</h2>
+      <form id="reportForm" class="report-form">
+        <!-- Parcel ID -->
+        <label for="parcelId">Parcel ID</label>
+        <input type="text" id="parcelId" placeholder="Enter Parcel ID" required>
+
+        <!-- Issue Type -->
+        <div class="issue-type">
+          <label>Issue Type:</label>
+          <label>
+            <input type="radio" name="issueType" value="damaged" required> Damaged Parcel
+          </label>
+          <label>
+            <input type="radio" name="issueType" value="lost"> Lost Parcel
+          </label>
+          <label>
+            <input type="radio" name="issueType" value="delayed"> Delayed Delivery
+          </label>
+          <label>
+            <input type="radio" name="issueType" value="other"> Other
+          </label>
+        </div>
+
+        <!-- Description -->
+        <label for="description">Issue Description</label>
+        <textarea id="description" placeholder="Describe the issue in detail..." required></textarea>
+
+        <!-- Submit Button -->
+        <button type="submit">Submit Report</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('reportForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const parcelId = document.getElementById('parcelId').value;
+      const issueDescription = document.getElementById('description').value;
+
+      fetch(`/report-parcel/${parcelId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ issue: issueDescription }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Parcel issue reported successfully!');
+          // Redirect after the alert is shown
+        setTimeout(function() {
+          window.location.href = '/courier-dashboard'; // Redirect to dashboard
+        }, 500); // Delay for a moment to show the alert before redirecting
+        } else {
+          alert('Failed to report the issue.');
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    });
+  </script>
+</body>
+</html>

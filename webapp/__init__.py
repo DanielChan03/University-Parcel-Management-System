@@ -14,6 +14,7 @@ def create_app():
     from .views import views
     from .auth import auth
     from .admin import admin
+    from .courier import courier
     from .AdminAuth import admin_auth 
     from .CourierAuth import courier_auth
 
@@ -21,6 +22,7 @@ def create_app():
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(admin, url_prefix='/admin')
+    app.register_blueprint(courier, url_prefix='/courier')
     app.register_blueprint(admin_auth, url_prefix='/admin')
     app.register_blueprint(courier_auth, url_prefix='/courier')
 

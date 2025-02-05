@@ -1,0 +1,41 @@
+{% extends "Courier/CourierBase.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notification Interface</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='Couriercss/CourierNotifications.css') }}">
+</head>
+<body>
+  <div class="container">
+    <div class="panel">
+      <h2>Notifications</h2>
+      <div class="notification-section">
+        <div class="notification-list">
+          <div class="notification-item unread">
+            <div class="title">New Parcel Received</div>
+            <div class="message">You have received a new parcel from Manager A.</div>
+            <div class="time">2 hours ago</div>
+          </div>
+          <div class="notification-item">
+            <div class="title">Delivery Update</div>
+            <div class="message">Your parcel has been delivered to the destination.</div>
+            <div class="time">1 day ago</div>
+          </div>
+          <!-- Add more notification items as needed -->
+        </div>
+        <div class="send-notification">
+          <h3>Send Notification</h3>
+          <form>
+            <input type="text" placeholder="Recipient ID" required>
+            <input type="text" placeholder="Title" required>
+            <textarea placeholder="Message" required></textarea>
+            <button type="submit">Send</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

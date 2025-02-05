@@ -1,0 +1,32 @@
+{% extends "Courier/CourierBase.html" %}
+
+{% block title %}Courier Dashboard - TrackIQ{% endblock %}
+
+{% block content %}
+    <div class="dashboard-container">
+        <h1>Welcome, {{ courier.Courier_Name }}</h1>
+
+        <div class="dashboard-section">
+            <h2>Active Delivery</h2>
+            <p><strong>Delivery ID:</strong> {{ active_delivery_id }}</p>
+            <p><strong>Delivery Date:</strong> {{ active_delivery_date }}</p>
+        </div>
+
+        <div class="dashboard-section">
+            <h2>Parcel Summary</h2>
+            <p><strong>Collected Parcels:</strong> {{ collected_parcels }}</p>
+            <p><strong>Reported Parcels:</strong> {{ reported_parcels }}</p>
+        </div>
+
+        <div class="dashboard-section">
+            <h2>Scheduled Delivery</h2>
+            <p><strong>Scheduled Delivery ID:</strong> {{ scheduled_delivery_id }}</p>
+            <p><strong>Scheduled Arrival Date:</strong> {{ scheduled_delivery_date }}</p>
+        </div>
+
+        <div class="dashboard-links">
+            <a href="{{ url_for('courier.view_assigned_parcels') }}" class="btn">View Assigned Parcels</a>
+            <a href="{{ url_for('courier.delivery_history') }}" class="btn">View Delivery History</a>
+        </div>
+    </div>
+{% endblock %}

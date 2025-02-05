@@ -19,7 +19,7 @@ def courier_login():
             if check_password_hash(courier.Courier_Password, password):
                 flash('Logged in successfully as Courier!', category='success')
                 login_user(courier, remember=True)
-                return render_template("Courier/CourierDashBoard.html")
+                return redirect(url_for('courier.courier_dashboard'))
             else:
                 flash('Incorrect password, try again.', category='error')
         else:
@@ -33,4 +33,4 @@ def courier_login():
 def courier_logout():
     logout_user()
     flash('Logged out successfully.', category='success')
-    return render_template("Courier/CourierLogin.html")
+    return redirect(url_for('Courier/courier_auth.courier_login'))
