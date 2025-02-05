@@ -9,8 +9,6 @@ admin = Blueprint('admin', __name__)
 # Admin Dashboard
 @admin.route('/admin-dashboard')
 def admin_dashboard():
-    # Fetch admin details (example: assuming admin ID is 1)
-    admin = Admin.query.get(1)
 
     # Fetch notifications (unresponded feedback) from session
     notifications = session.get('feedbacks', {})  # Get feedbacks from session
@@ -29,7 +27,7 @@ def admin_dashboard():
 
     return render_template(
         "Admin/AdminDashboard.html",
-        admin=admin,
+        admin=current_user,
         notifications=notifications,
         total_received_parcels=total_received_parcels,
         total_delivered_parcels=total_delivered_parcels,
@@ -72,7 +70,7 @@ def update_user(user_id):
     data = request.get_json()
     print("Received data:", data)  # Debugging: Log the received data
 
-    user = StudentStaff.query.get(user_id)  # Replace with your user model
+    
 
     if user:
         # Update User ID if it has changed
