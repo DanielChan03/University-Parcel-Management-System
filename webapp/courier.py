@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, session, flash, redirect, url_for, request, jsonify
+from datetime import datetime
 from flask_login import current_user, login_required
 from .models import Courier, Parcel, ParcelStatus, Delivery, db
 from werkzeug.security import generate_password_hash
@@ -76,6 +77,77 @@ def report_parcel(parcel_id):
     flash('Parcel issue reported successfully!', 'success')
     return render_template("Courier/CourierReportDelivery.html")
 
+# Initialize notifications in the session if not already present
+def init_notifications():
+    if 'notifications' not in session:
+        session['notifications'] = []
+
+# Add a notification to the session
+def add_notification(recipient_id, title, message):
+    init_notifications()
+    notification = {
+        'id': f"NOT{random.randint(100000, 999999)}",  # Generate a unique ID
+        'recipient_id': recipient_id,
+        'title': title,
+        'message': message,
+        'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'is_read': False
+    }
+    session['notifications'].append(notification)
+    session.modified = True  # Ensure the session is marked as modified
+
+# Get notifications for the current user
+def get_notifications(recipient_id):
+    init_notifications()
+    return [n for n in session['notifications'] if n['recipient_id'] == recipient_id]
+
+# Mark a notification as read
+def mark_notification_read(notification_id):
+    init_notifications()
+    for notification in session['notifications']:
+        if notification['id'] == notification_id:
+            notification['is_read'] = True
+            session.modified = True
+            break
+
+# Render the CourierNotifications.html page
+@courier.route('/notifications', methods=['GET'])
+@login_required
+def notifications_page():
+    return render_template("Courier/CourierNotifications.html")
+
+# Send Notification
+@courier.route('/send-notification', methods=['POST'])
+@login_required
+def send_notification():
+    data = request.get_json()
+    recipient_id = data.get('recipient_id')
+    title = data.get('title')
+    message = data.get('message')
+
+    if not recipient_id or not title or not message:
+        return jsonify({'success': False, 'message': 'Missing required fields.'}), 400
+
+    # Add the notification to the session
+    add_notification(recipient_id, title, message)
+
+    return jsonify({'success': True, 'message': 'Notification sent successfully.'})
+
+# Get Notifications
+@courier.route('/get-notifications', methods=['GET'])
+@login_required
+def get_notifications_route():
+    # Fetch notifications for the current user
+    notifications = get_notifications(current_user.get_id())
+
+    return jsonify({'success': True, 'notifications': notifications})
+
+# Mark Notification as Read
+@courier.route('/mark-notification-read/<string:notification_id>', methods=['POST'])
+@login_required
+def mark_notification_read_route(notification_id):
+    mark_notification_read(notification_id)
+    return jsonify({'success': True, 'message': 'Notification marked as read.'})
 
 # View Delivery History
 @courier.route('/delivery-history', methods=['GET'])
