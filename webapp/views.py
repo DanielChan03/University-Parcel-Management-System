@@ -13,27 +13,35 @@ def home():
     return render_template("StudentStaff/home.html", user=current_user)
 
 @views.route('/submit_feedback', methods=['GET', 'POST'])
+@login_required
 def submit_feedback():
     if request.method == 'POST':
         content = request.form['content']
         feedback_type = request.form['feedback_type']
 
         if content:
-            user_id = current_user.User_ID  
-            user_name = current_user.User_Name 
-            
-            # Store the feedback with the user ID in the session (temporary storage)
+            user_id = str(current_user.User_ID)  # Ensure consistent key type
+            user_name = current_user.User_Name  
+
+            # Initialize feedbacks storage if not present
             if 'feedbacks' not in session:
-                session['feedbacks'] = {}  # Initialize feedbacks if not present
-            session['feedbacks'][str(user_id)] = {
+                session['feedbacks'] = {}
+
+            # Ensure the user has a list to store multiple feedback entries
+            if user_id not in session['feedbacks']:
+                session['feedbacks'][user_id] = []
+
+            # Append new feedback instead of overwriting
+            session['feedbacks'][user_id].append({
                 'name': user_name,  
                 'content': content,
                 'feedback_type': feedback_type
-            }
-            
+            })
+
             flash('Your feedback has been submitted successfully.', 'success')
 
     return render_template('StudentStaff/StudentStaffFeedback.html')
+
 
 
 

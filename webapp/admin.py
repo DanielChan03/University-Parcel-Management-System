@@ -120,6 +120,35 @@ def view_feedback():
     feedbacks = session.get('feedbacks', {})
     return render_template('Admin/AdminViewFeedback.html', feedbacks=feedbacks)
 
+# Admin route for responding to feedback
+@admin.route('/respond_feedback/<user_id>/<int:feedback_index>', methods=['GET', 'POST'])
+@login_required
+def respond_feedback(user_id, feedback_index):
+    feedbacks = session.get('feedbacks', {})
+
+    # Ensure feedback exists for the user
+    if str(user_id) not in feedbacks or len(feedbacks[str(user_id)]) <= feedback_index:
+        flash('Feedback not found!', 'danger')
+        return redirect(url_for('admin.view_feedback'))
+    
+    # Get the feedback item the admin will respond to
+    feedback = feedbacks[str(user_id)][feedback_index]
+
+    # Handle response submission
+    if request.method == 'POST':
+        response_content = request.form['response']
+        
+        # Update the feedback with a response
+        feedback['response'] = response_content
+        flash('Response has been submitted successfully.', 'success')
+
+        # Save the updated feedback back to session
+        session['feedbacks'][str(user_id)][feedback_index] = feedback
+        return redirect(url_for('admin.view_feedback'))  # Redirect back to feedback view page
+    
+    return render_template('Admin/RespondFeedback.html', feedback=feedback, user_id=user_id, feedback_index=feedback_index)
+
+
 # Add User
 @admin.route('/add-user', methods=['GET', 'POST'])
 @login_required

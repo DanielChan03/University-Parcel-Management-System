@@ -22,16 +22,18 @@
                 </tr>
             </thead>
             <tbody>
-                {% for user_id, feedback in feedbacks.items() %}
-                    <tr>
-                        <td>{{ user_id }}</td>
-                        <td>{{ feedback['name'] }}</td>
-                        <td>{{ feedback['feedback_type'] }}</td>
-                        <td>{{ feedback['content'] }}</td>
-                        <td>
-                            <a href="{{ url_for('admin.view_feedback', user_id=user_id) }}" class="btn btn-primary">Respond</a>
-                        </td>
-                    </tr>
+                {% for user_id, feedback_list in feedbacks.items() %}
+                    {% for feedback in feedback_list %}
+                        <tr>
+                            <td>{{ user_id }}</td>
+                            <td>{{ feedback['name'] }}</td>
+                            <td>{{ feedback['feedback_type'] }}</td>
+                            <td>{{ feedback['content'] }}</td>
+                            <td>
+                                <a href="{{ url_for('admin.view_feedback', user_id=user_id) }}" class="btn btn-primary">Respond</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
                 {% endfor %}
             </tbody>
         </table>

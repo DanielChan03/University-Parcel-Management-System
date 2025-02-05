@@ -1,0 +1,25 @@
+{% extends "Admin/AdminBase.html" %}
+
+{% block title %}Admin - Respond to Feedback{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='Admincss/RespondFeedback.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="respond-feedback-container">
+    <h1>Respond to Feedback</h1>
+
+    <div class="feedback-details">
+        <p><strong>User ID:</strong> {{ user_id }}</p>
+        <p><strong>User Name:</strong> {{ feedback['name'] }}</p>
+        <p><strong>Feedback Type:</strong> {{ feedback['feedback_type'] }}</p>
+        <p><strong>Content:</strong> {{ feedback['content'] }}</p>
+    </div>
+
+    <form method="POST">
+        <textarea name="response" rows="5" placeholder="Enter your response here..." required></textarea><br>
+        <button type="submit" class="btn btn-success">Submit Response</button>
+    </form>
+</div>
+{% endblock %}
