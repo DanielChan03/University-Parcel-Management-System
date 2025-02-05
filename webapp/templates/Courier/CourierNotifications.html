@@ -7,29 +7,72 @@
     <div class="panel">
       <h2>Notifications</h2>
       <div class="notification-section">
-        <div class="notification-list">
-          <div class="notification-item unread">
-            <div class="title">New Parcel Received</div>
-            <div class="message">You have received a new parcel from Manager A.</div>
-            <div class="time">2 hours ago</div>
-          </div>
-          <div class="notification-item">
-            <div class="title">Delivery Update</div>
-            <div class="message">Your parcel has been delivered to the destination.</div>
-            <div class="time">1 day ago</div>
-          </div>
-          <!-- Add more notification items as needed -->
+        <div class="notification-list" id="notification-list">
+          <!-- Notifications will be dynamically loaded here -->
         </div>
         <div class="send-notification">
           <h3>Send Notification</h3>
-          <form>
-            <input type="text" placeholder="Recipient ID" required>
-            <input type="text" placeholder="Title" required>
-            <textarea placeholder="Message" required></textarea>
+          <form id="send-notification-form">
+            <input type="text" id="recipient-id" placeholder="Recipient ID" required>
+            <input type="text" id="notification-title" placeholder="Title" required>
+            <textarea id="notification-message" placeholder="Message" required></textarea>
             <button type="submit">Send</button>
           </form>
         </div>
       </div>
     </div>
   </div>
+
+  <script>
+    // Fetch and display notifications
+    async function fetchNotifications() {
+      const response = await fetch('/get-notifications');
+      const data = await response.json();
+      if (data.success) {
+        const notificationList = document.getElementById('notification-list');
+        notificationList.innerHTML = data.notifications.map(notification => `
+          <div class="notification-item ${notification.is_read ? '' : 'unread'}" data-id="${notification.id}">
+            <div class="title">${notification.title}</div>
+            <div class="message">${notification.message}</div>
+            <div class="time">${notification.time}</div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // Mark notification as read
+    document.getElementById('notification-list').addEventListener('click', async (event) => {
+      const notificationItem = event.target.closest('.notification-item');
+      if (notificationItem) {
+        const notificationId = notificationItem.dataset.id;
+        await fetch(`/mark-notification-read/${notificationId}`, { method: 'POST' });
+        notificationItem.classList.remove('unread');
+      }
+    });
+
+    // Send notification
+    document.getElementById('send-notification-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const recipientId = document.getElementById('recipient-id').value;
+      const title = document.getElementById('notification-title').value;
+      const message = document.getElementById('notification-message').value;
+
+      const response = await fetch('/send-notification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recipient_id: recipientId, title, message })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert('Notification sent successfully!');
+        fetchNotifications();
+      } else {
+        alert(data.message);
+      }
+    });
+
+    // Initial fetch
+    fetchNotifications();
+  </script>
 {% endblock %}
