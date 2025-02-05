@@ -61,10 +61,6 @@
       .then(data => {
         if (data.success) {
           alert('Parcel issue reported successfully!');
-          // Redirect after the alert is shown
-        setTimeout(function() {
-          window.location.href = '/courier-dashboard'; // Redirect to dashboard
-        }, 500); // Delay for a moment to show the alert before redirecting
         } else {
           alert('Failed to report the issue.');
         }
