@@ -6,7 +6,7 @@ body {
     padding: 0;
 }
 
-/* Courier Dashboard Header */
+/* Dashboard Header */
 .courier-dashboard-container {
     background-color: #fff;
     padding: 20px;
@@ -21,67 +21,45 @@ body {
     color: #333;
 }
 
-/* Courier Dashboard Sections */
+/* Dashboard Sections */
 .courier-dashboard-sections {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Added for even spacing */
     gap: 20px;
     margin: 20px;
 }
 
-.welcome-card, .active-delivery-card, .collected-parcels-card, .reported-parcels-card {
+/* Card Styles */
+.welcome-card, 
+.notification-card, 
+.current-delivery-record-card, 
+.delivery-activity-card {
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 48%;
+    width: 48%; /* 2 cards per row */
 }
 
-/* Welcome Image */
-.welcome-image {
-    width: 100px;
-    height: auto;
-    display: block;
-    margin-top: 10px;
-}
-
-/* Active Deliveries Card */
-.active-delivery-card h3 {
+/* Welcome Card */
+.welcome-card h3 {
     font-size: 18px;
     color: #007bff;
     margin-bottom: 10px;
 }
 
-.active-delivery-card p {
+.welcome-card p {
     font-size: 16px;
     color: #555;
 }
 
-/* Collected Parcels Card */
-.collected-parcels-card h3 {
+/* Notification Card */
+.notification-card h3 {
     font-size: 18px;
     color: #28a745;
     margin-bottom: 10px;
 }
 
-.collected-parcels-card p {
-    font-size: 16px;
-    color: #555;
-}
-
-/* Reported Parcels Card */
-.reported-parcels-card h3 {
-    font-size: 18px;
-    color: #dc3545;
-    margin-bottom: 10px;
-}
-
-.reported-parcels-card p {
-    font-size: 16px;
-    color: #555;
-}
-
-/* Notifications List */
 .notification-card ul {
     list-style-type: none;
     padding: 0;
@@ -95,16 +73,36 @@ body {
     border-left: 4px solid #007bff;
 }
 
-/* Status Card */
-.status-card p {
-    font-size: 16px;
-    color: #555;
-    margin: 5px 0;
+/* Current Delivery Record Card */
+.current-delivery-record-card h3 {
+    font-size: 18px;
+    color: #007bff;
+    margin-bottom: 10px;
 }
 
-/* Feedback Card */
-.feedback-card p {
+.current-delivery-record-card p {
     font-size: 16px;
     color: #555;
-    margin: 5px 0;
+}
+
+/* Delivery Activity Card */
+.delivery-activity-card h3 {
+    font-size: 18px;
+    color: #dc3545;
+    margin-bottom: 10px;
+}
+
+.delivery-activity-card p {
+    font-size: 16px;
+    color: #555;
+}
+
+/* Responsiveness for Small Screens */
+@media (max-width: 768px) {
+    .welcome-card, 
+    .notification-card, 
+    .current-delivery-record-card, 
+    .delivery-activity-card {
+        width: 100%; /* Stack cards on smaller screens */
+    }
 }

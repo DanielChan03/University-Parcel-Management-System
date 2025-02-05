@@ -1,32 +1,46 @@
 {% extends "Courier/CourierBase.html" %}
 
-{% block title %}Courier Dashboard - TrackIQ{% endblock %}
+{% block title %}Courier Dashboard{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='Couriercss/CourierDashboard.css') }}">
+{% endblock %}
 
 {% block content %}
-    <div class="dashboard-container">
-        <h1>Welcome, {{ courier.Courier_Name }}</h1>
+    <div class="courier-dashboard-container">
+        <h1>Courier Dashboard</h1>
+    </div>
 
-        <div class="dashboard-section">
-            <h2>Active Delivery</h2>
-            <p><strong>Delivery ID:</strong> {{ active_delivery_id }}</p>
-            <p><strong>Delivery Date:</strong> {{ active_delivery_date }}</p>
+    <div class="courier-dashboard-sections">
+        <!-- Welcome Card -->
+        <div class="welcome-card">
+            <h3>Welcome,{{courier.Courier_Name}}!</h3>
+            <img src="courier_welcome.png" alt="Welcome Image" class="welcome-image">
         </div>
 
-        <div class="dashboard-section">
-            <h2>Parcel Summary</h2>
-            <p><strong>Collected Parcels:</strong> {{ collected_parcels }}</p>
-            <p><strong>Reported Parcels:</strong> {{ reported_parcels }}</p>
-        </div>
-
-        <div class="dashboard-section">
-            <h2>Scheduled Delivery</h2>
-            <p><strong>Scheduled Delivery ID:</strong> {{ scheduled_delivery_id }}</p>
-            <p><strong>Scheduled Arrival Date:</strong> {{ scheduled_delivery_date }}</p>
-        </div>
-
-        <div class="dashboard-links">
-            <a href="{{ url_for('courier.view_assigned_parcels') }}" class="btn">View Assigned Parcels</a>
-            <a href="{{ url_for('courier.delivery_history') }}" class="btn">View Delivery History</a>
+        <!-- Notification Card -->
+        <div class="notification-card">
+            <h3>Notifications</h3>
+            <ul>
+                <li>Delivery scheduled for 2023-10-15</li>
+                <li>Parcel reported missing</li>
+            </ul>
         </div>
     </div>
+
+    <div class="courier-dashboard-sections">
+        <!-- Current Delivery Record Card -->
+        <div class="current-delivery-record-card">
+            <h3>Current Delivery Record</h3>
+            <p>Destination: </p>
+            <p>Number of Parcels Collected:</p>
+            <p>Reported Parcels: </p>
+        </div>
+
+        <!-- Delivery Activity Card -->
+        <div class="delivery-activity-card">
+            <h3>Delivery Activity</h3>
+            <p>Delivery D001 is scheduled.</p>
+        </div>
+</div>
 {% endblock %}

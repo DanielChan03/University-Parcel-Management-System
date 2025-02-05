@@ -33,4 +33,4 @@ def courier_login():
 def courier_logout():
     logout_user()
     flash('Logged out successfully.', category='success')
-    return redirect(url_for('Courier/courier_auth.courier_login'))
+    return redirect(url_for('courier_auth.courier_login'))
