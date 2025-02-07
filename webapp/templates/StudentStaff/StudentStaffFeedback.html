@@ -7,39 +7,42 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <!-- Left: Feedback List -->
-    <div class="feedback-list">
-        <h2>Feedback History</h2>
-        <div id="feedbackContainer">
-            {% if feedbacks %}
-                {% for user_id, feedback_list in feedbacks.items() %}
-                    {% for feedback in feedback_list %}
+<div class="feedback-page">
+    <!-- Combined Container -->
+    <div class="feedback-container">
+        
+        <!-- Feedback List Section (Left) -->
+        <div class="feedback-list">
+            <h2>Feedback History</h2>
+            <div id="feedbackContainer">
+                {% if feedbacks %}
+                    {% for feedback in feedbacks %}
                         <div class="feedback-item {% if feedback.admin_response == 'Not Responded' %}pending{% endif %}">
                             <strong>{{ feedback['feedback_type'] }}</strong>
                             <p>{{ feedback['content'] }}</p>
                             <small>Admin: {{ feedback['admin_response'] }}</small>
                         </div>
                     {% endfor %}
-                {% endfor %}
-            {% else %}
-                <p>No feedback submitted yet.</p>
-            {% endif %}
+                {% else %}
+                    <p>No feedback submitted yet.</p>
+                {% endif %}
+            </div>
         </div>
-    </div>
-    
-    <!-- Right: Feedback Form -->
-    <div class="feedback-form">
-        <h2>Submit Feedback</h2>
+
+        <!-- Feedback Form Section (Right) -->
+        <div class="feedback-form">
+            <h2>Submit Feedback</h2>
             <form action="{{ url_for('views.submit_feedback') }}" method="POST">
-            <select name="feedback_type">
-                <option value="General">General</option>
-                <option value="Suggestion">Suggestion</option>
-                <option value="Complaint">Complaint</option>
-            </select>
-            <textarea name="content" placeholder="Enter your feedback..." required></textarea>
-            <button type="submit">Submit</button>
-        </form>
-    </div>
+                <select name="feedback_type">
+                    <option value="General">General</option>
+                    <option value="Suggestion">Suggestion</option>
+                    <option value="Complaint">Complaint</option>
+                </select>
+                <textarea name="content" placeholder="Enter your feedback..." required></textarea>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+    </div> <!-- End of Combined Container -->
 </div>
 {% endblock %}

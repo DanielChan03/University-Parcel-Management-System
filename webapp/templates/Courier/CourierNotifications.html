@@ -1,7 +1,10 @@
 {% extends "Courier/CourierBase.html" %}
 
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='Couriercss/CourierNotifications.css') }}">
+{% endblock %}
+
 {% block content %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='Couriercss/CourierNotifications.css') }}">
 
   <div class="container">
     <div class="panel">

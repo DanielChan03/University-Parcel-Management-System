@@ -17,6 +17,7 @@ def create_app():
     from .courier import courier
     from .AdminAuth import admin_auth 
     from .CourierAuth import courier_auth
+    from .ParcelManagerAuth import parcel_manager_auth
 
 
     app.register_blueprint(views, url_prefix='/')
@@ -25,6 +26,7 @@ def create_app():
     app.register_blueprint(courier, url_prefix='/courier')
     app.register_blueprint(admin_auth, url_prefix='/admin')
     app.register_blueprint(courier_auth, url_prefix='/courier')
+    app.register_blueprint(parcel_manager_auth, url_prefix='/parcel-manager')
 
     # Import models and create tables
     from .models import StudentStaff, University, ParcelManager, SmartLocker, Courier, ParcelStatus, Parcel, Waitlist,Admin, Report  # Import all your models here

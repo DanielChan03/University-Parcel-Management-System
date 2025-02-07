@@ -43,39 +43,42 @@ def view_assigned_parcels():
     return render_template("Courier/CourierAssignedParcels.html", parcels=assigned_parcels)
 
 # Update Parcel Status
-@courier.route('/update-parcel-status/<string:parcel_id>', methods=['POST'])
+@courier.route('/report-parcel', methods=['GET', 'POST'])
 @login_required
-def update_parcel_status(parcel_id):
-    data = request.get_json()
-    new_status = data.get('status')
+def report_parcel():
+    if request.method == 'POST':
+        parcel_id = request.form.get("parcel_id")
+        issue_description = request.form.get("issue_description")
+        issue_type = request.form.get("issue_type")
 
-    parcel_status = ParcelStatus.query.filter_by(Parcel_ID=parcel_id).first()
-    if parcel_status:
-        parcel_status.Status_Type = new_status
+        if not parcel_id or not issue_description:
+            flash("Parcel ID and issue description are required.", "danger")
+            return redirect(url_for("courier.report_parcel"))
+
+        # Check if the parcel exists
+        parcel = Parcel.query.filter_by(Parcel_ID=parcel_id).first()
+        if not parcel:
+            flash("Parcel ID not found. Please enter a valid Parcel ID.", "danger")
+            return redirect(url_for("courier.report_parcel"))
+
+        # Create a new report
+        new_report = ParcelStatus(
+            Status_ID=f"REP{random.randint(100000, 999999)}",
+            Parcel_ID=parcel_id,
+            Status_Type="Reported - " + issue_type.capitalize(),
+            Updated_by=current_user.Courier_ID
+        )
+        db.session.add(new_report)
+
+        # Update parcel status (assuming there's a column to track status)
+        parcel.Status = "Reported"  # Update status column in the Parcel table (if it exists)
+
         db.session.commit()
-        flash('Parcel status updated successfully!', 'success')
-        return jsonify({'success': True})
-    
-    return jsonify({'success': False, 'message': 'Parcel not found.'})
 
-# Report an Issue with a Parcel
-@courier.route('/report-parcel', methods=['GET'])
-@login_required
-def report_parcel(parcel_id):
-    data = request.get_json()
-    issue_description = data.get('issue')
+        flash("Parcel issue reported successfully!", "success")
+        return redirect(url_for("courier.report_parcel"))
 
-    new_report = ParcelStatus(
-        Status_ID=f"REP{random.randint(100000, 999999)}",
-        Parcel_ID=parcel_id,
-        Status_Type="Reported",
-        Updated_by=current_user.Courier_ID
-    )
-    db.session.add(new_report)
-    db.session.commit()
-
-    flash('Parcel issue reported successfully!', 'success')
-    return render_template("Courier/CourierReportDelivery.html")
+    return render_template("Courier/CourierReportDelivery.html") 
 
 # Initialize notifications in the session if not already present
 def init_notifications():
@@ -114,6 +117,7 @@ def mark_notification_read(notification_id):
 @courier.route('/notifications', methods=['GET'])
 @login_required
 def notifications_page():
+    
     return render_template("Courier/CourierNotifications.html")
 
 # Send Notification
@@ -149,13 +153,11 @@ def mark_notification_read_route(notification_id):
     mark_notification_read(notification_id)
     return jsonify({'success': True, 'message': 'Notification marked as read.'})
 
-# View Delivery History
-@courier.route('/delivery-history', methods=['GET'])
+# Collect parcel
+@courier.route('/collect-parcel', methods=['GET'])
 @login_required
-def delivery_history():
-    deliveries = Delivery.query.filter_by(Courier_ID=current_user.Courier_ID).all()
-    return render_template("Courier/CourierDeliveryHistory.html", deliveries=deliveries)
-
-
+def collect_parcel():
+    #  deliveries = Delivery.query.filter_by(Courier_ID=current_user.Courier_ID).all()
+     return render_template("Courier/CourierCollectParcel.html") # , deliveries=deliveries
 
 

@@ -1,78 +1,59 @@
-/* Main Container */
-.container {
-    background-color: #f4f4f4;
-    padding: 20px;
+/* Main Page Container */
+.feedback-page {
     display: flex;
     justify-content: center;
-    align-items: center;
+    padding: 20px;
+    background-color: #f4f4f4;
     min-height: 100vh;
 }
 
-/* Feedback List */
-.feedback-list {
-    flex: 1;
-    padding: 10px;
-    min-width: 320px; /* FIX: Prevents shrinking */
+/* Combined Container */
+.feedback-container {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 1200px; /* Max width to make it fit well within the web app */
+    display: flex;
+    gap: 20px; /* Space between feedback sections */
+    flex-wrap: wrap; /* Allows content to wrap on smaller screens */
 }
 
-.feedback-list h2 {
-    margin-bottom: 10px;
-    font-size: 1.5rem;
-}
-
-.feedback-item {
-    background: #e7f4e4;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    border-left: 5px solid #28a745;
-}
-
-.feedback-item.pending {
-    background: #fff3cd;
-    border-left: 5px solid #ffc107;
-}
-
-.feedback-item strong {
-    display: block;
-    font-size: 1.1rem;
-}
-
-.feedback-item p {
-    margin: 5px 0;
-}
-
-.feedback-item small {
-    display: block;
-    color: #555;
-}
-
-/* Feedback Form */
+/* Feedback Form (Right) */
 .feedback-form {
-    flex: 1;
-    padding: 10px;
-    min-width: 320px; /* FIX: Prevents shrinking */
+    flex: 1 1 300px; /* Allows it to grow/shrink and be at least 300px wide */
+    padding: 15px;
+    min-width: 320px; /* Prevent shrinking */
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .feedback-form h2 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
+    font-size: 1.75rem;
+    margin-bottom: 20px;
+    color: #333;
 }
 
 .feedback-form select, 
 .feedback-form textarea, 
 .feedback-form button {
     width: 100%;
+    padding: 12px;
     margin-top: 10px;
-    padding: 10px;
     font-size: 1rem;
     border-radius: 5px;
     border: 1px solid #ccc;
 }
 
+.feedback-form select {
+    background: #fff;
+}
+
 .feedback-form textarea {
     resize: none;
-    height: 100px;
+    height: 120px;
 }
 
 .feedback-form button {
@@ -81,17 +62,78 @@
     border: none;
     cursor: pointer;
     font-weight: bold;
+    transition: background-color 0.3s;
 }
 
 .feedback-form button:hover {
     background: #0056b3;
 }
 
+/* Feedback List (Left) */
+.feedback-list {
+    flex: 2 1 500px; /* Makes this section larger */
+    padding: 15px;
+    min-width: 320px; /* Prevent shrinking */
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-list h2 {
+    font-size: 1.75rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.feedback-item {
+    background: #e7f4e4;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border-left: 5px solid #28a745;
+    transition: background-color 0.3s;
+}
+
+.feedback-item.pending {
+    background: #fff3cd;
+    border-left: 5px solid #ffc107;
+}
+
+.feedback-item:hover {
+    background-color: #f1f9f3;
+}
+
+.feedback-item strong {
+    font-size: 1.2rem;
+    display: block;
+    color: #333;
+}
+
+.feedback-item p {
+    margin: 8px 0;
+    font-size: 1rem;
+}
+
+.feedback-item small {
+    display: block;
+    color: #888;
+    font-size: 0.9rem;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
-    .container {
+    .feedback-container {
         flex-direction: column;
         align-items: center;
-        width: 90%;
+        padding: 15px;
+    }
+
+    .feedback-form, .feedback-list {
+        flex: none;
+        width: 100%;
+    }
+
+    .feedback-item p {
+        font-size: 1rem;
     }
 }

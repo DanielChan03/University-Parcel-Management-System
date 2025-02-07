@@ -12,5 +12,32 @@
 </div>
 
 <div class="dashboard-sections">
-    <h2>Welcome, {{ }}</h2>
+    <!-- Welcome Card -->
+    <div class = "welcome-card">
+        <h2>Welcome, {{ parcel_manager.Manager_Name }}!</h2>
+    </div>
+    
+    <!-- Notification Card -->
+     <div class = "notification-card">
+        <h2>Notification:</h2>
+        <ul>
+
+        </ul>
+     </div>
 </div>
+
+<div class="dashboard-sections">
+    <!-- Parcel Status Card -->
+     <div class = "status-card">
+        <h2>Parcel Status:</h2>
+        <p>Number of Parcels Receive: {{ total_received_parcels }}</p>
+        <p>Number of Parcel Delivered: {{ total_received_parcels }}</p>
+        <p>Number of Parcel Pending: {{ pending_parcels }}</p>
+     </div>
+
+     <!-- Locker Status Card -->
+      <div class="locker-status-card"></div>
+      <h2>Locker Status:</h2>
+      <p>{{ }}</p>
+</div>
+

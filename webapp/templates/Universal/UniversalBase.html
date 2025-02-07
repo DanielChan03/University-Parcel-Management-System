@@ -3,51 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Courier Dashboard - TrackIQ{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='Couriercss/CourierBase.css') }}">
+    <title>{% block title %}TrackIQ{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='StudentStaffcss/base.css') }}">
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-        integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMIKntVJfZ6WgRNjl4tUdPhB8zKHuRoRjNNt/6"
+        integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMIKnAtVJfZ6WgRNjl4tUdPhB8zKHuRoRjNNt/6"
         crossorigin="anonymous"
     />
     {% block styles %}{% endblock %}
 </head>
 <body>
-    <!-- Courier Header Section -->
-    <header class="courier-header">
+    <!-- Header Section -->
+    <header class="header">
         <button class="sidebar-toggle-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="24" height="24" fill="currentColor">
-                <path d="M0 88c0-13.25 10.75-24 24-24h400c13.25 0 24 10.75 24 24v16c0 13.25-10.75 24-24 24H24C10.75 128 0 117.3 0 104V88zm0 160c0-13.25 10.75-24 24-24h400c13.25 0 24 10.75 24 24v16c0 13.25-10.75 24-24 24H24C10.75 248 0 237.3 0 224v-16zm0 160c0-13.25 10.75-24 24-24h400c13.25 0 24 10.75 24 24v16c0 13.25-10.75 24-24 24H24C10.75 408 0 397.3 0 384v-16z"/>
-            </svg>
-        </button>
-        <nav class="courier-navbar">
-            <span style="color: white;">TrackCourier │ </span> 
-            <a href="{{ url_for('courier.courier_dashboard') }}">Dashboard</a>
-            <a href="{{ url_for('courier.collect_parcel') }}">Collect Parcel</a>
-            <a href="#">Update Parcel Status</a>
-            <a href="{{ url_for('courier.notifications_page') }}">Notifications</a>
-            <a href="{{ url_for('courier.report_parcel') }}">Report Delivery Issue</a>
-        </nav>
-    </header>
-
-    <!-- Courier Sidebar Section (Initially Hidden) -->
-    <div class="courier-sidebar">
-        <button class="sidebar-close-btn">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="24" height="24" fill="currentColor">
                 <path d="M0 88c0-13.25 10.75-24 24-24h400c13.25 0 24 10.75 24 24v16c0 13.25-10.75 24-24 24H24C10.75 128 0 117.3 0 104V88zm0 160c0-13.25 10.75-24 24-24h400c13.25 0 24 10.75 24 24v16c0 13.25-10.75 24-24 24H24C10.75 248 0 237.3 0 224v-16zm0 160c0-13.25 10.75-24 24-24h400c13.25 0 24 10.75 24 24v16c0 13.25-10.75 24-24 24H24C10.75 408 0 397.3 0 384v-16z"/>
             </svg> <!-- Close Icon -->
         </button>
+        <div class="logo">TrackIQ</div>
+    </header>
+
+   
+    <!-- Sidebar Section -->
+    <div class="sidebar">
+        <button class="sidebar-close-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="24" height="24" fill="currentColor">
+                <path d="M0 88c0-13.25 10.75-24 24-24h400c13.25 0 24 10.75 24 24v16c0 13.25-10.75 24-24 24H24C10.75 128 0 117.3 0 104V88zm0 160c0-13.25 10.75-24 24-24h400c13.25 0 24 10.75 24 24v16c0 13.25-10.75 24-24 24H24C10.75 248 0 237.3 0 224v-16zm0 160c0-13.25 10.75-24 24-24h400c13.25 0 24 10.75 24 24v16c0 13.25-10.75 24-24 24H24C10.75 408 0 397.3 0 384v-16z"/>
+            </svg> <!-- Close Icon -->
+        </button>    
         <ul>
-            <li><a href="{{ url_for('courier.courier_dashboard') }}">Profile</a></li>
-            <li><a href="{{ url_for('courier.courier_dashboard') }}">Dashboard</a></li>
-            <li><a href="{{ url_for('courier_auth.courier_logout') }}">Logout</a></li>
+            <li><a href="/">About Us</a></li>
+            <li><a href="#">Forgot Password</a></li>
         </ul>
     </div>
 
     <!-- Main Content Section -->
     <main class="main">
-        
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="flash-container">
@@ -63,6 +55,12 @@
         {% block content %}{% endblock %}
     </main>
 
-    <script src="{{ url_for('static', filename='CourierScript.js') }}"></script>
+    <!-- Footer Section -->
+    <footer class="footer">
+        <p>TrackIQ for Your Business</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='universalscript.js') }}"></script>
 </body>
 </html>

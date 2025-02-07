@@ -8,8 +8,11 @@ admin = Blueprint('admin', __name__)
 
 # Admin Dashboard
 @admin.route('/admin-dashboard')
+@login_required
 def admin_dashboard():
-
+    if not isinstance(current_user, Admin):
+            flash('Unauthorized access! Please log in as an admin.', category='error')
+            return redirect(url_for('admin_auth.admin_login'))
     # Fetch notifications (unresponded feedback) from session
     notifications = session.get('feedbacks', {})  # Get feedbacks from session
 
@@ -39,6 +42,9 @@ def admin_dashboard():
 @admin.route('/generate-report', methods=['GET'])
 @login_required
 def generate_report():
+    if not isinstance(current_user, Admin):
+            flash('Unauthorized access! Please log in as an admin.', category='error')
+            return redirect(url_for('admin_auth.admin_login'))
     return render_template("Admin/AdminGenerateReport.html")
 
 # Manage Users
@@ -47,7 +53,7 @@ def generate_report():
 def manage_users():
     if not isinstance(current_user, Admin):
         flash('Unauthorized access! Please log in as an admin.', category='error')
-        return redirect(url_for('auth.admin_login'))
+        return redirect(url_for('admin_auth.admin_login'))
 
     search_term = request.args.get('search', '')
     admin_uni_id = current_user.University_ID
@@ -69,8 +75,6 @@ def manage_users():
 def update_user(user_id):
     data = request.get_json()
     print("Received data:", data)  # Debugging: Log the received data
-
-    
 
     if user:
         # Update User ID if it has changed
@@ -103,6 +107,7 @@ def update_user(user_id):
 @admin.route('/delete-user/<string:user_id>', methods=['POST'])
 
 def delete_user(user_id):
+    
     user = StudentStaff.query.get(user_id)  # Replace with your user model
 
     if user:
@@ -116,14 +121,34 @@ def delete_user(user_id):
 # View Feedback
 @admin.route('/view-feedback', methods=['GET'])
 @login_required
+
 def view_feedback():
-    feedbacks = session.get('feedbacks', {})
-    return render_template('Admin/AdminViewFeedback.html', feedbacks=feedbacks)
+    if not isinstance(current_user, Admin):
+            flash('Unauthorized access! Please log in as an admin.', category='error')
+            return redirect(url_for('admin_auth.admin_login'))
+    all_feedbacks = session.get('feedbacks', {})
+
+    # Filter out only "Not Responded" feedbacks
+    filtered_feedbacks = {
+        user_id: [
+            feedback for feedback in feedback_list if feedback.get('admin_response') == 'Not Responded'
+        ]
+        for user_id, feedback_list in all_feedbacks.items()
+    }
+
+    # Remove users with no pending feedback
+    filtered_feedbacks = {user: fb for user, fb in filtered_feedbacks.items() if fb}
+
+    return render_template('Admin/AdminViewFeedback.html', feedbacks=filtered_feedbacks)
+
 
 # Admin route for responding to feedback
 @admin.route('/respond_feedback/<user_id>/<int:feedback_index>', methods=['GET', 'POST'])
 @login_required
 def respond_feedback(user_id, feedback_index):
+    if not isinstance(current_user, Admin):
+            flash('Unauthorized access! Please log in as an admin.', category='error')
+            return redirect(url_for('admin_auth.admin_login'))
     feedbacks = session.get('feedbacks', {})
 
     # Ensure feedback exists for the user
@@ -131,29 +156,40 @@ def respond_feedback(user_id, feedback_index):
         flash('Feedback not found!', 'danger')
         return redirect(url_for('admin.view_feedback'))
     
-    # Get the feedback item the admin will respond to
-    feedback = feedbacks[str(user_id)][feedback_index]
-
+    # Get the feedback list for this user
+    user_feedback_list = feedbacks[str(user_id)]
+    
     if request.method == 'POST':
         response_content = request.form['response']
-        
+
         # Update the feedback with admin's response
-        feedback['admin_response'] = response_content  # Store the response
+        user_feedback_list[feedback_index]['admin_response'] = response_content
+
+        # Remove responded feedback from the list
+       # user_feedback_list.pop(feedback_index)  
+
+        # If user has no more feedback, remove them from session
+        if not user_feedback_list:
+            del feedbacks[str(user_id)]  # Remove user from feedbacks
+
+        #  Reassign and mark session as modified
+        session['feedbacks'] = feedbacks  
+        session.modified = True  
 
         flash('Response has been submitted successfully.', 'success')
-
-        # Save the updated feedback back to session
-        session['feedbacks'][str(user_id)][feedback_index] = feedback
-
-        return redirect(url_for('admin.view_feedback'))  # Redirect back to feedback view page
+        return redirect(url_for('admin.view_feedback'))  # Redirect back to feedback view
     
-    return render_template('Admin/AdminRespondFeedback.html', feedback=feedback, user_id=user_id, feedback_index=feedback_index)
+    return render_template('Admin/AdminRespondFeedback.html', feedback=feedbacks[str(user_id)][feedback_index], user_id=user_id, feedback_index=feedback_index)
+
 
 
 # Add User
 @admin.route('/add-user', methods=['GET', 'POST'])
 @login_required
 def add_user():
+    if not isinstance(current_user, Admin):
+            flash('Unauthorized access! Please log in as an admin.', category='error')
+            return redirect(url_for('admin_auth.admin_login'))
     if request.method == 'POST':
         user_type = request.form.get('userType')
         name = request.form.get('name')

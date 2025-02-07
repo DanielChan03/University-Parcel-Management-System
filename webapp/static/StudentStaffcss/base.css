@@ -139,18 +139,23 @@
 
 /* Flash message container */
 .flash-container {
-    margin: 1rem auto;
-    padding: 0.5rem;
-    max-width: 800px;
+    position: fixed;  /* Keeps it on top of the page */
+    top: 10px;  /* Adjust top position */
+    left: 50%;
+    transform: translateX(-50%);  /* Center the message */
+    z-index: 1000;  /* Ensure it's above other elements */
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
 }
 
+/* Ensure flash messages do not affect layout */
 .flash-message {
+    display: inline-block; /* Prevents full width block effect */
     padding: 1rem;
-    margin-bottom: 1rem;
     border-radius: 5px;
     font-size: 1rem;
     font-weight: bold;
-    text-align: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -179,7 +184,7 @@
 }
 
 .flash-message {
-    animation: fade-out 1s ease-in-out forwards;
+    animation: fade-out 2s ease-in-out forwards;
 }
 
 @keyframes fade-out {

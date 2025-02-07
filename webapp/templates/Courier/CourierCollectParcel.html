@@ -1,0 +1,106 @@
+{% extends "Courier/CourierBase.html" %}
+
+{% block title %}Collect Parcel{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='Couriercss/CourierCollectParcel.css') }}">
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <!-- Delivery List Panel -->
+    <div class="panel">
+      <h2>Delivery List</h2>
+      <!-- Delivery Group 1 -->
+      <div class="delivery-group">
+        <h3 onclick="toggleDetails('D001')">
+          <span class="arrow">▶</span>
+          D001, 2023-10-15
+        </h3>
+        <div id="D001" class="parcel-details">
+          <table>
+            <thead>
+              <tr>
+                <th>Parcel ID</th>
+                <th>Sender</th>
+                <th>Recipient</th>
+                <th>Destination</th>
+                <th>Status</th>
+                <th>Mark Collected</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1001</td>
+                <td>John Doe</td>
+                <td>Jane Smith</td>
+                <td>University X</td>
+                <td>Ready to Pickup</td>
+                <td><input type="checkbox" id="collected-1001"></td>
+              </tr>
+              <tr>
+                <td>1002</td>
+                <td>Alice Lee</td>
+                <td>Bob Brown</td>
+                <td>University Y</td>
+                <td>Ready to Pickup</td>
+                <td><input type="checkbox" id="collected-1002"></td>
+              </tr>
+              <tr class="done-row">
+                <td colspan="6" style="text-align: right;">
+                  <button class="done-button" onclick="saveCollectedStatus('D001')">Done</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Delivery Group 2 -->
+      <div class="delivery-group">
+        <h3 onclick="toggleDetails('D002')">
+          <span class="arrow">▶</span>
+          D002, 2023-10-16
+        </h3>
+        <div id="D002" class="parcel-details">
+          <table>
+            <thead>
+              <tr>
+                <th>Parcel ID</th>
+                <th>Sender</th>
+                <th>Recipient</th>
+                <th>Destination</th>
+                <th>Status</th>
+                <th>Mark Collected</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1003</td>
+                <td>Michael Brown</td>
+                <td>Sarah Johnson</td>
+                <td>University Z</td>
+                <td>Ready to Pickup</td>
+                <td><input type="checkbox" id="collected-1003"></td>
+              </tr>
+              <tr class="done-row">
+                <td colspan="6" style="text-align: right;">
+                  <button class="done-button" onclick="saveCollectedStatus('D002')">Done</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Search by Date -->
+      <div class="search-by-date">
+        <input type="date" id="searchDate" placeholder="Search by date">
+        <button onclick="searchByDate()">Search</button>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='CollectParcelScript.js') }}"></script>
+  <!-- View Parcel Manager Button -->
+  <button class="view-parcel-manager" onclick="viewParcelManager()">View Parcel Manager</button>
+{% endblock %}

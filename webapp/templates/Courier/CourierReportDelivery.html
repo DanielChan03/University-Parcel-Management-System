@@ -4,71 +4,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Report Delivery Issue</title>
+  <title>Report Parcel Issue</title>
   <link rel="stylesheet" href="Couriercss/CourierReportDelivery.css">
 </head>
 <body>
   <div class="container">
     <div class="panel">
       <h2>Report Delivery Issue</h2>
-      <form id="reportForm" class="report-form">
+      <form action="{{ url_for('courier.report_parcel') }}" method="POST">
         <!-- Parcel ID -->
-        <label for="parcelId">Parcel ID</label>
-        <input type="text" id="parcelId" placeholder="Enter Parcel ID" required>
+        <label for="parcel_id">Parcel ID:</label>
+        <input type="text" id="parcel_id" name="parcel_id" placeholder="Enter Parcel ID" required>
 
         <!-- Issue Type -->
-        <div class="issue-type">
-          <label>Issue Type:</label>
-          <label>
-            <input type="radio" name="issueType" value="damaged" required> Damaged Parcel
-          </label>
-          <label>
-            <input type="radio" name="issueType" value="lost"> Lost Parcel
-          </label>
-          <label>
-            <input type="radio" name="issueType" value="delayed"> Delayed Delivery
-          </label>
-          <label>
-            <input type="radio" name="issueType" value="other"> Other
-          </label>
-        </div>
+        <label>Issue Type:</label>
+        <label><input type="radio" name="issue_type" value="damaged" required> Damaged Parcel</label>
+        <label><input type="radio" name="issue_type" value="lost"> Lost Parcel</label>
+        <label><input type="radio" name="issue_type" value="delayed"> Delayed Delivery</label>
+        <label><input type="radio" name="issue_type" value="other"> Other</label>
 
-        <!-- Description -->
-        <label for="description">Issue Description</label>
-        <textarea id="description" placeholder="Describe the issue in detail..." required></textarea>
+        <!-- Issue Description -->
+        <label for="issue_description">Issue Description:</label>
+        <textarea id="issue_description" name="issue_description" placeholder="Describe the issue..." required></textarea>
 
         <!-- Submit Button -->
         <button type="submit">Submit Report</button>
       </form>
     </div>
   </div>
-
-  <script>
-    document.getElementById('reportForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-
-      const parcelId = document.getElementById('parcelId').value;
-      const issueDescription = document.getElementById('description').value;
-
-      fetch(`/report-parcel/${parcelId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ issue: issueDescription }),
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          alert('Parcel issue reported successfully!');
-        } else {
-          alert('Failed to report the issue.');
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-    });
-  </script>
 </body>
 </html>

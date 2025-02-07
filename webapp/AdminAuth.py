@@ -33,4 +33,4 @@ def admin_login():
 def admin_logout():
     logout_user()
     flash('Logged out successfully.', category='success')
-    return redirect(url_for('Admin/admin_auth.admin_login'))
+    return redirect(url_for('admin_auth.admin_login'))
