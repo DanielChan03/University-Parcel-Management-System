@@ -6,23 +6,23 @@
     font-family: Arial, sans-serif;
 }
 
-/* Header for Courier Dashboard */
-.courier-header {
+/* Header for Dashboard */
+.header {
     background-color: #49b2c6;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     padding: 1rem 2rem;
 }
 
-.courier-logo {
+.logo {
     font-size: 1.5rem;
     font-weight: bold;
     color: #fff;
-    margin-right: 2rem;
+    margin-right: auto;
 }
 
-.courier-login-btn {
+.login-btn {
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -36,27 +36,27 @@
     gap: 0.5rem;
 }
 
-.courier-login-btn:hover {
+.login-btn:hover {
     background-color: #cdd9e5;
 }
 
-.courier-navbar {
+.navbar {
     display: flex;
     gap: 1rem;
     flex-grow: 1;
 }
 
-.courier-navbar a {
+.navbar a {
     color: #fff;
     text-decoration: none;
 }
 
-.courier-navbar a:hover {
+.navbar a:hover {
     text-decoration: underline;
 }
 
 /* Sidebar (Initially Hidden) */
-.courier-sidebar {
+.sidebar {
     width: 250px;
     background-color: #333;
     color: #fff;
@@ -69,24 +69,24 @@
     transition: left 0.3s ease-in-out;
 }
 
-.courier-sidebar ul {
+.sidebar ul {
     list-style-type: none;
     padding: 0;
 }
 
-.courier-sidebar ul li {
+.sidebar ul li {
     padding: 15px 0;
     border-bottom: 1px solid #444;
 }
 
-.courier-sidebar ul li a {
+.sidebar ul li a {
     color: #fff;
     text-decoration: none;
     display: block;
     font-size: 1rem;
 }
 
-.courier-sidebar ul li a:hover {
+.sidebar ul li a:hover {
     background-color: #49b2c6;
     padding-left: 20px;
     transition: 0.3s;
@@ -130,7 +130,7 @@
 }
 
 /* Active State for Sidebar (when visible) */
-.courier-sidebar.open {
+.sidebar.open {
     left: 0; /* Show sidebar */
 }
 
@@ -138,8 +138,8 @@
     margin-left: 250px; /* Space for sidebar when it's open */
 }
 
-/* Courier Footer Section */
-.courier-footer {
+/* Footer Section */
+.footer {
     background: #49b2c6;
     text-align: center;
     padding: 1rem;
@@ -149,9 +149,14 @@
 
 /* Flash message container */
 .flash-container {
-    margin: 1rem auto;
-    padding: 0.5rem;
-    max-width: 800px;
+    position: fixed;  /* Keeps it on top of the page */
+    top: 10px;  /* Adjust top position */
+    left: 50%;
+    transform: translateX(-50%);  /* Center the message */
+    z-index: 1000;  /* Ensure it's above other elements */
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
 }
 
 /* General flash message styles */
@@ -162,7 +167,7 @@
     font-size: 1rem;
     font-weight: bold;
     text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(252, 251, 251, 0.1);
 }
 
 /* Success message styling */

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Admin Dashboard - TrackIQ{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='AdminStyles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Universalcss/Base.css') }}">
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -15,15 +15,15 @@
 <body>
 
     <!-- Admin Header Section -->
-    <header class="admin-header">
+    <header class="header">
         <button class="sidebar-toggle-btn">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="24" height="24" fill="currentColor">
                 <path d="M0 88c0-13.25 10.75-24 24-24h400c13.25 0 24 10.75 24 24v16c0 13.25-10.75 24-24 24H24C10.75 128 0 117.3 0 104V88zm0 160c0-13.25 10.75-24 24-24h400c13.25 0 24 10.75 24 24v16c0 13.25-10.75 24-24 24H24C10.75 248 0 237.3 0 224v-16zm0 160c0-13.25 10.75-24 24-24h400c13.25 0 24 10.75 24 24v16c0 13.25-10.75 24-24 24H24C10.75 408 0 397.3 0 384v-16z"/>
             </svg>
         </button>
-        <nav class="admin-navbar">
+        <nav class="navbar">
             <a href="#">Dashboard</a>
-            <a href="#">Assign Parcel </a>
+            <a href="{{ url_for('parcel_manager.assign_parcel_to_courier') }}">Assign Parcel To Courier </a>
             <a href="#">Parcel Status</a>
             <a href="#">Organize Parcel</a>
             <a href="#">Monitor Locker</a>
@@ -32,7 +32,7 @@
     </header>
 
     <!-- Admin Sidebar Section (Initially Hidden) -->
-    <div class="admin-sidebar">
+    <div class="sidebar">
         <button class="sidebar-close-btn">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="24" height="24" fill="currentColor">
                 <path d="M0 88c0-13.25 10.75-24 24-24h400c13.25 0 24 10.75 24 24v16c0 13.25-10.75 24-24 24H24C10.75 128 0 117.3 0 104V88zm0 160c0-13.25 10.75-24 24-24h400c13.25 0 24 10.75 24 24v16c0 13.25-10.75 24-24 24H24C10.75 248 0 237.3 0 224v-16zm0 160c0-13.25 10.75-24 24-24h400c13.25 0 24 10.75 24 24v16c0 13.25-10.75 24-24 24H24C10.75 408 0 397.3 0 384v-16z"/>

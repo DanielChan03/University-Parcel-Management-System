@@ -18,6 +18,7 @@ def create_app():
     from .AdminAuth import admin_auth 
     from .CourierAuth import courier_auth
     from .ParcelManagerAuth import parcel_manager_auth
+    from .parcel_manager import parcel_manager
 
 
     app.register_blueprint(views, url_prefix='/')
@@ -26,6 +27,7 @@ def create_app():
     app.register_blueprint(courier, url_prefix='/courier')
     app.register_blueprint(admin_auth, url_prefix='/admin')
     app.register_blueprint(courier_auth, url_prefix='/courier')
+    app.register_blueprint(parcel_manager, url_prefix='/parcel-manager')
     app.register_blueprint(parcel_manager_auth, url_prefix='/parcel-manager')
 
     # Import models and create tables
@@ -41,7 +43,7 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(user_id):
-        from .models import StudentStaff, Admin, Courier
+        from .models import StudentStaff, Admin, Courier, ParcelManager
 
         user = StudentStaff.query.get(user_id)
         if user:
@@ -54,6 +56,10 @@ def create_app():
         courier = Courier.query.get(user_id)
         if courier:
             return courier
+
+        parcel_manager = ParcelManager.query.get(user_id)  # Add this
+        if parcel_manager:
+            return parcel_manager
             
         return None
 

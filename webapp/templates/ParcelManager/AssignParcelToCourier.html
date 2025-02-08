@@ -1,0 +1,89 @@
+{% extends "ParcelManager/ParcelManagerBase.html" %}
+
+{% block title %}Assign Parcel to Courier{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='Couriercss/AssignParcelToCourier.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- Parcel List Panel -->
+  <div class="panel">
+    <h2>Parcel List</h2>
+
+    <!-- Success/Error Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <table>
+      <thead>
+        <tr>
+          <th>Parcel ID</th>
+          <th>Sender Name</th>
+          <th>Recipient</th>
+          <th>Destination</th>
+          <th>Status</th>
+          <th>Assign to Courier</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for parcel in parcels %}
+        <tr>
+          <td>{{ parcel.Parcel_ID }}</td>
+          <td>{{ parcel.sender.User_Name }}</td>
+          <td>{{ parcel.Recipient_Name }}</td>
+          <td>{{ parcel.Destination }}</td>
+          <td>Ready for Dispatch</td>
+          <td class="actions">
+            <form method="POST" action="{{ url_for('assign.assign_parcel') }}">
+              <input type="hidden" name="parcel_id" value="{{ parcel.Parcel_ID }}">
+              <select name="courier_id" required>
+                <option value="" disabled selected>-- Select a Courier --</option>
+                {% for courier in couriers %}
+                  <option value="{{ courier.Courier_ID }}">{{ courier.Courier_ID }} - {{ courier.Courier_Name }}</option>
+                {% endfor %}
+              </select>
+          </td>
+          <td class="actions">
+              <button type="submit">Assign</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Courier List Panel -->
+  <div class="panel">
+    <h2>Courier List</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Courier ID</th>
+          <th>Courier Name</th>
+          <th>Assigned Parcels</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for courier in couriers %}
+        <tr>
+          <td>{{ courier.Courier_ID }}</td>
+          <td>{{ courier.Courier_Name }}</td>
+          <td>{{ courier.parcels|length }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

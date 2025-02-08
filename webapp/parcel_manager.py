@@ -39,9 +39,9 @@ def parcel_manager_dashboard():
         locker_status = locker_status
     )
 
-def update_locker_status(Locker_ID, Locker_Status):
-    # Update locker status
-    data = request.get_json()
+@parcel_manager.route('/assign_parcel_to_courier', methods=['GET', 'POST'])
+def assign_parcel_to_courier():
+    return render_template('ParcelManager/AssignParcelToCourier.html')
 
     
     
