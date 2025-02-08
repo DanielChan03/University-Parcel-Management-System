@@ -24,10 +24,10 @@
         <div class="logo">TrackIQ</div>
         <nav class="navbar">
             <a href="/">Home</a>
-            <a href="#">Dashboard</a>
+            <a href="{{ url_for('views.dashboard') }}">Dashboard</a>
             <a href="#">Receive Parcel</a>
             <a href="{{ url_for('views.send_parcel') }}">Send Parcel</a>
-            <a href="#">Track Parcel</a>
+            <a href="{{ url_for('views.track_parcel') }}">Track Parcel</a>
             <a href="{{ url_for('views.report_locker_issue') }}">Report Locker Issue</a>
             <a href="{{ url_for('views.submit_feedback') }}">Feedback</a>
         </nav>

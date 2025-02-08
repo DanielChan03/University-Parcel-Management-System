@@ -28,13 +28,16 @@
         {% for parcel in parcels %}
         <tr>
           <td>{{ parcel.Parcel_ID }}</td>
-          <td>{{ parcel.get_sender_name()}}</td>
-          <td>{{ parcel.get_recipient_name()}}</td>
+          <td>{{ parcel.Sender_Name }}</td>
+          <td>{{ parcel.Recipient_Name }}</td>
           <td>{{ parcel.Destination }}</td> 
-          <td>Ready for Dispatch</td> 
+          <td>{{ parcel.Status }}</td> 
           <td class="actions">
             <form method="POST" action="{{ url_for('parcel_manager.assign_parcel_to_courier') }}">
+              <!-- Hidden input for parcel ID -->
               <input type="hidden" name="parcel_id" value="{{ parcel.Parcel_ID }}">
+              
+              <!-- Dropdown for courier selection -->
               <select name="courier_id" required>
                 <option value="" disabled selected>-- Select a Courier --</option>
                 {% for courier in couriers %}
@@ -43,6 +46,7 @@
               </select>
           </td>
           <td class="actions">
+              <!-- Submit button -->
               <button type="submit">Assign</button>
             </form>
           </td>
@@ -68,6 +72,7 @@
         <tr>
           <td>{{ courier.Courier_ID }}</td>
           <td>{{ courier.Courier_Name }}</td>
+          <td>{{ courier.deliveries|length }}</td>
         </tr>
         {% endfor %}
       </tbody>

@@ -77,11 +77,27 @@ def assign_parcel_to_courier():
 
         return redirect(url_for('parcel_manager.assign_parcel_to_courier'))
 
-    # Get all parcels with status "Ready for Dispatch"
-    parcels = db.session.query(Parcel).join(ParcelStatus).filter(ParcelStatus.Status_Type == 'Ready for Dispatch').all()
+    # Get all parcels with status "Registered"
+    parcels = db.session.query(Parcel).join(ParcelStatus).filter(ParcelStatus.Status_Type == 'Registered').all()
     
     # Fetch all couriers
     couriers = Courier.query.all()
 
-    return render_template('ParcelManager/AssignParcelToCourier.html', parcels=parcels, couriers=couriers)    
+    # Prepare the data to be passed to the template
+    parcel_data = []
+    for parcel in parcels:
+        sender_name = parcel.sender.User_Name if parcel.sender else 'Unknown'
+        recipient_name = parcel.recipient.User_Name if parcel.recipient else 'Unknown'
+        destination = parcel.recipient.get_university_name() if parcel.recipient else 'Unknown'
+        status = 'Registered'  # Since we filtered by "Registered" status
+
+        parcel_data.append({
+            'Parcel_ID': parcel.Parcel_ID,
+            'Sender_Name': sender_name,
+            'Recipient_Name': recipient_name,
+            'Destination': destination,
+            'Status': status
+        })
+
+    return render_template('ParcelManager/AssignParcelToCourier.html', parcels=parcel_data, couriers=couriers)
 

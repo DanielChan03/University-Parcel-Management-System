@@ -121,6 +121,7 @@ class Delivery(db.Model):
   
     # Relationship to Courier table
     courier = db.relationship('Courier', backref=db.backref('deliveries', lazy=True))
+    parcels = db.relationship('Parcel', back_populates='delivery')
 
 
 # Parcel Status Table
@@ -154,7 +155,7 @@ class Parcel(db.Model):
     receive_locker = db.relationship('SmartLocker', foreign_keys=[Receive_Locker_ID], backref=db.backref('received_parcels', lazy=True))
     sender = db.relationship('StudentStaff', foreign_keys=[Sender_User_ID], backref=db.backref('sent_parcels', lazy=True))
     recipient = db.relationship('StudentStaff', foreign_keys=[Recipient_User_ID], backref=db.backref('received_parcels', lazy=True))
-    delivery = db.relationship('Delivery', foreign_keys=[Delivery_ID], backref=db.backref('parcels', lazy=True))
+    delivery = db.relationship('Delivery', foreign_keys=[Delivery_ID], back_populates='parcels')
     send_manager = db.relationship('ParcelManager', foreign_keys=[Send_Manager_ID], backref=db.backref('sent_parcels', lazy=True))
     receive_manager = db.relationship('ParcelManager', foreign_keys=[Receive_Manager_ID], backref=db.backref('received_parcels', lazy=True))
 
