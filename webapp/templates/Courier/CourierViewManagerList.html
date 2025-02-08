@@ -1,130 +1,117 @@
 {% extends "Courier/CourierBase.html" %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Parcel Manager List</title>
-  <link rel="stylesheet" href= "{{ url_for('static', filename = 'Couriercss/CourierViewManagerList.css') }}">
-</head>
-<body>
-  <div class="container">
-    <!-- Back Button -->
-    <button class="back-button" onclick="goBack()">Back</button>
 
-    <div class="panel">
-      <h2>Parcel Manager List</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Parcel ID</th>
-            <th>Origin Manager ID</th>
-            <th>Origin Manager</th>
-            <th>Destination Manager ID</th>
-            <th>Destination Manager</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1001</td>
-            <td>M001</td>
-            <td>Manager A</td>
-            <td>M002</td>
-            <td>Manager B</td>
-            <td><button onclick="viewManagers('1001')">View Details</button></td>
-          </tr>
-          <tr>
-            <td>1002</td>
-            <td>M003</td>
-            <td>Manager C</td>
-            <td>M004</td>
-            <td>Manager D</td>
-            <td><button onclick="viewManagers('1002')">View Details</button></td>
-          </tr>
-          <!-- Add more rows as needed -->
-        </tbody>
-      </table>
-    </div>
+{% block title %}Parcel Manager List{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='Couriercss/CourierViewManagerList.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- Back Button -->
+  <button class="back-button" onclick="goBack()">Back</button>
+
+  <div class="panel">
+    <h2>Parcel Manager List</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Parcel ID</th>
+          <th>Origin Manager ID</th>
+          <th>Origin Manager</th>
+          <th>Destination Manager ID</th>
+          <th>Destination Manager</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Hardcoded Parcel Data -->
+        <tr>
+          <td>1</td>
+          <td>101</td>
+          <td>John Doe</td>
+          <td>102</td>
+          <td>Jane Smith</td>
+          <td>
+            <button onclick="viewManagers('1', '101', 'John Doe', 'john.doe@email.com', '123-456-7890', 'Branch A', '102', 'Jane Smith', 'jane.smith@email.com', '987-654-3210', 'Branch B')">
+              View Details
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>103</td>
+          <td>Alice Johnson</td>
+          <td>104</td>
+          <td>Bob Brown</td>
+          <td>
+            <button onclick="viewManagers('2', '103', 'Alice Johnson', 'alice.johnson@email.com', '321-654-9870', 'Branch C', '104', 'Bob Brown', 'bob.brown@email.com', '654-321-9870', 'Branch D')">
+              View Details
+            </button>
+          </td>
+        </tr>
+        <!-- Add more hardcoded rows as needed -->
+      </tbody>
+    </table>
   </div>
+</div>
 
-  <!-- Modal for Manager Details -->
-  <div id="managerModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <h2>Manager Details</h2>
-      <div class="manager-details">
-        <div class="column">
-          <h3>Origin Manager</h3>
-          <p><strong>Manager ID:</strong> <span id="originManagerId"></span></p>
-          <p><strong>Name:</strong> <span id="originManagerName"></span></p>
-          <p><strong>Email:</strong> <span id="originManagerEmail"></span></p>
-          <p><strong>Contact:</strong> <span id="originManagerContact"></span></p>
-          <p><strong>Work Branch:</strong> <span id="originWorkBranch"></span></p>
-        </div>
-        <div class="column">
-          <h3>Destination Manager</h3>
-          <p><strong>Manager ID:</strong> <span id="destinationManagerId"></span></p>
-          <p><strong>Name:</strong> <span id="destinationManagerName"></span></p>
-          <p><strong>Email:</strong> <span id="destinationManagerEmail"></span></p>
-          <p><strong>Contact:</strong> <span id="destinationManagerContact"></span></p>
-          <p><strong>Work Branch:</strong> <span id="destinationWorkBranch"></span></p>
-        </div>
+<!-- Modal for Manager Details -->
+<div id="managerModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2>Manager Details</h2>
+    <div class="manager-details">
+      <div class="column">
+        <h3>Origin Manager</h3>
+        <p><strong>Manager ID:</strong> <span id="originManagerId"></span></p>
+        <p><strong>Name:</strong> <span id="originManagerName"></span></p>
+        <p><strong>Email:</strong> <span id="originManagerEmail"></span></p>
+        <p><strong>Contact:</strong> <span id="originManagerContact"></span></p>
+        <p><strong>Work Branch:</strong> <span id="originWorkBranch"></span></p>
+      </div>
+      <div class="column">
+        <h3>Destination Manager</h3>
+        <p><strong>Manager ID:</strong> <span id="destinationManagerId"></span></p>
+        <p><strong>Name:</strong> <span id="destinationManagerName"></span></p>
+        <p><strong>Email:</strong> <span id="destinationManagerEmail"></span></p>
+        <p><strong>Contact:</strong> <span id="destinationManagerContact"></span></p>
+        <p><strong>Work Branch:</strong> <span id="destinationWorkBranch"></span></p>
       </div>
     </div>
   </div>
+</div>
+{% endblock %}
 
-  <script>
-    // Function to view manager details
-    function viewManagers(parcelId) {
-      const modal = document.getElementById('managerModal');
+{% block scripts %}
+<script>
+  function viewManagers(parcelId, originId, originName, originEmail, originContact, originBranch, destId, destName, destEmail, destContact, destBranch) {
+    document.getElementById('originManagerId').textContent = originId;
+    document.getElementById('originManagerName').textContent = originName;
+    document.getElementById('originManagerEmail').textContent = originEmail;
+    document.getElementById('originManagerContact').textContent = originContact;
+    document.getElementById('originWorkBranch').textContent = originBranch;
 
-      // Example data (replace with actual data from backend)
-      const managers = {
-        origin: {
-          managerId: 'M001',
-          managerName: 'Manager A',
-          managerEmail: 'managerA@example.com',
-          managerContact: '123-456-7890',
-          workBranch: 'Branch X'
-        },
-        destination: {
-          managerId: 'M002',
-          managerName: 'Manager B',
-          managerEmail: 'managerB@example.com',
-          managerContact: '987-654-3210',
-          workBranch: 'Branch Y'
-        }
-      };
+    document.getElementById('destinationManagerId').textContent = destId;
+    document.getElementById('destinationManagerName').textContent = destName;
+    document.getElementById('destinationManagerEmail').textContent = destEmail;
+    document.getElementById('destinationManagerContact').textContent = destContact;
+    document.getElementById('destinationWorkBranch').textContent = destBranch;
 
-      // Populate origin manager details
-      document.getElementById('originManagerId').textContent = managers.origin.managerId;
-      document.getElementById('originManagerName').textContent = managers.origin.managerName;
-      document.getElementById('originManagerEmail').textContent = managers.origin.managerEmail;
-      document.getElementById('originManagerContact').textContent = managers.origin.managerContact;
-      document.getElementById('originWorkBranch').textContent = managers.origin.workBranch;
+    document.getElementById('managerModal').style.display = 'flex';
+  }
 
-      // Populate destination manager details
-      document.getElementById('destinationManagerId').textContent = managers.destination.managerId;
-      document.getElementById('destinationManagerName').textContent = managers.destination.managerName;
-      document.getElementById('destinationManagerEmail').textContent = managers.destination.managerEmail;
-      document.getElementById('destinationManagerContact').textContent = managers.destination.managerContact;
-      document.getElementById('destinationWorkBranch').textContent = managers.destination.workBranch;
+  function closeModal() {
+    document.getElementById('managerModal').style.display = 'none';
+  }
 
-      // Show the modal
-      modal.style.display = 'flex';
-    }
-
-    // Function to close the modal
-    function closeModal() {
-      const modal = document.getElementById('managerModal');
-      modal.style.display = 'none';
-    }
-
-    // Function to go back to the previous page
-    function goBack() {
+  function goBack() {
+    // Check if there's history to go back to, otherwise redirect to the default page
+    if (document.referrer) {
       window.history.back();
+    } else {
+      window.location.href = "{{ url_for('courier.collect_parcel') }}";
     }
-  </script>
-</body>
-</html>
+  }
+</script>
+{% endblock %}
