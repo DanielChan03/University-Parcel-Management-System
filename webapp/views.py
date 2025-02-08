@@ -3,7 +3,8 @@ from datetime import datetime
 from flask_login import login_required, current_user
 from . import db
 import random
-from .models import Parcel, SmartLocker, University, StudentStaff, ParcelManager, Delivery  # Ensure these models are imported
+import string
+from .models import Parcel, SmartLocker, University, StudentStaff, ParcelManager, Delivery, ParcelStatus  # Ensure these models are imported
 
 views = Blueprint('views', __name__)
 
@@ -89,24 +90,21 @@ def send_parcel():
         receiver_identifier = request.form['receiver_identifier']
         receiver_university_id = request.form['receiver_university']
 
-        # Ensure the sender and receiver are not the same person
+        # Ensure sender and receiver are different
         if str(receiver_identifier) == str(sender_user_id):
             flash('You cannot send a parcel to yourself.', 'error')
             return redirect(url_for('views.send_parcel'))
 
-        # Ensure the sender and receiver are from different universities
+        # Ensure sender and receiver are from different universities
         if str(receiver_university_id) == str(sender_university_id):
             flash('Receiver cannot be from the same university as the sender.', 'error')
             return redirect(url_for('views.send_parcel'))
 
-        # Try to find the receiver by name first
+        # Find receiver (by name or user ID)
         receiver = StudentStaff.query.filter_by(User_Name=receiver_identifier, University_ID=receiver_university_id).first()
-
-        # If not found by name, try to find by user ID
         if not receiver:
             receiver = StudentStaff.query.filter_by(User_ID=receiver_identifier, University_ID=receiver_university_id).first()
 
-        # Ensure receiver exists in the selected university
         if receiver is None:
             flash('Receiver not found in the selected university. Please check the name or user ID.', 'error')
             return redirect(url_for('views.send_parcel'))
@@ -131,8 +129,6 @@ def send_parcel():
 
         # Generate a unique Delivery_ID
         delivery_id = f"DEL{''.join(random.choices('0123456789', k=8))}"
-
-        # Ensure the Delivery_ID is unique
         while Delivery.query.filter_by(Delivery_ID=delivery_id).first():
             delivery_id = f"DEL{''.join(random.choices('0123456789', k=8))}"
 
@@ -165,6 +161,7 @@ def send_parcel():
             flash('No manager found for the receiver university. Please contact support.', 'error')
             return redirect(url_for('views.send_parcel'))
 
+        # Generate a unique Parcel_ID
         parcel_id = f"PAR{''.join(random.choices('0123456789', k=8))}"
         while Parcel.query.filter_by(Parcel_ID=parcel_id).first():
             parcel_id = f"PAR{''.join(random.choices('0123456789', k=8))}"    
@@ -184,6 +181,23 @@ def send_parcel():
         db.session.add(new_parcel)
         db.session.commit()
 
+        # Generate a unique Status_ID (3 random uppercase letters + 8 random digits)
+        status_id = f"{''.join(random.choices(string.ascii_uppercase, k=3))}{''.join(random.choices('0123456789', k=8))}"
+        while ParcelStatus.query.filter_by(Status_ID=status_id).first():
+            status_id = f"{''.join(random.choices(string.ascii_uppercase, k=3))}{''.join(random.choices('0123456789', k=8))}"
+
+        # Create the parcel status entry
+        new_status = ParcelStatus(
+            Status_ID=status_id,
+            Parcel_ID=parcel_id,
+            Status_Type="Registered",
+            Updated_by=sender_user_id,  # The sender
+            Updated_At=datetime.utcnow()
+        )
+        db.session.add(new_status)
+        db.session.commit()
+
+        # Notify the sender
         if 'notifications' not in session:
             session['notifications'] = []
         session['notifications'].append(f"New parcel sent! Tracking Number: {parcel_id}. Please place it in Locker ID: {send_locker_id}.")

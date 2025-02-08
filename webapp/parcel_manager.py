@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, session, flash, redirect, url_for, request, jsonify
 from flask_login import current_user, login_required
-from .models import  Parcel, ParcelStatus,Waitlist, ParcelManager, Courier, SmartLocker, db
+from .models import  Parcel, ParcelStatus, Waitlist, ParcelManager, Courier, SmartLocker, db
 from werkzeug.security import generate_password_hash
 import random
 
@@ -77,12 +77,11 @@ def assign_parcel_to_courier():
 
         return redirect(url_for('parcel_manager.assign_parcel_to_courier'))
 
-    # Get all unassigned parcels (where Delivery_ID is NULL)
-    parcels = Parcel.query.filter(Parcel.Delivery_ID.is_(None)).all()
+    # Get all parcels with status "Ready for Dispatch"
+    parcels = db.session.query(Parcel).join(ParcelStatus).filter(ParcelStatus.Status_Type == 'Ready for Dispatch').all()
+    
+    # Fetch all couriers
     couriers = Courier.query.all()
 
-    return render_template('ParcelManager/AssignParcelToCourier.html', parcels=parcels, couriers=couriers)
-
-    
-    
+    return render_template('ParcelManager/AssignParcelToCourier.html', parcels=parcels, couriers=couriers)    
 

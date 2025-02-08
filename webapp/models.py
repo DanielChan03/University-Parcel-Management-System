@@ -158,6 +158,16 @@ class Parcel(db.Model):
     send_manager = db.relationship('ParcelManager', foreign_keys=[Send_Manager_ID], backref=db.backref('sent_parcels', lazy=True))
     receive_manager = db.relationship('ParcelManager', foreign_keys=[Receive_Manager_ID], backref=db.backref('received_parcels', lazy=True))
 
+        # Get sender name
+    def get_sender_name(self):
+        return self.sender.User_Name if self.sender else 'Unknown'
+
+    # Get recipient name
+    def get_recipient_name(self):
+        return self.recipient.User_Name if self.recipient else 'Unknown'
+
+
+
 # Waitlist Table
 class Waitlist(db.Model):
     __tablename__ = 'waitlist'

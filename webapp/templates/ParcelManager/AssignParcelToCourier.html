@@ -28,10 +28,10 @@
         {% for parcel in parcels %}
         <tr>
           <td>{{ parcel.Parcel_ID }}</td>
-          <td>{{ parcel.sender.User_Name }}</td>
-          <td>{{ parcel.Recipient_Name }}</td>
-          <td>{{ parcel.Destination }}</td>
-          <td>Ready for Dispatch</td>
+          <td>{{ parcel.get_sender_name()}}</td>
+          <td>{{ parcel.get_recipient_name()}}</td>
+          <td>{{ parcel.Destination }}</td> 
+          <td>Ready for Dispatch</td> 
           <td class="actions">
             <form method="POST" action="{{ url_for('parcel_manager.assign_parcel_to_courier') }}">
               <input type="hidden" name="parcel_id" value="{{ parcel.Parcel_ID }}">

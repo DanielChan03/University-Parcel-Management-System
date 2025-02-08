@@ -6,14 +6,18 @@ body {
     padding: 0;
 }
 
-/* Container for the panels */
+/* Larger Container */
 .container {
     background-color: #fff;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    max-width: 1200px;
+    max-width: 95vw; /* Increase width to take more screen space */
+    min-height: 80vh; /* Make it take more height */
     margin: 20px auto;
+    justify-content: center;
+    padding: 20px;
+    overflow: hidden; /* Prevent unnecessary scrolling outside */
 }
 
 /* Panel Styles */
@@ -23,15 +27,19 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
     flex: 1;
-    min-width: 500px;
-    overflow-x: auto; /* Makes table scrollable if content is too wide */
+    min-width: 600px; /* Prevents shrinking too much */
+    max-width: 1200px; /* Prevents it from being too wide */
+    max-height: 500px; /* Set max height to allow scrolling */
+    overflow-y: auto; /* Enables vertical scrolling */
+    overflow-x: auto; /* Enables horizontal scrolling for wide tables */
 }
 
 /* Headings */
 .panel h2 {
     margin-top: 0;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     color: #333;
+    text-align: center;
 }
 
 /* Table Styles */
@@ -39,41 +47,45 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    min-width: 700px; /* Ensure the table does not shrink too much */
 }
 
 /* Table Header */
 th {
     background-color: #f8f9fa;
     font-weight: bold;
-    padding: 12px;
+    padding: 14px;
     text-align: left;
-    white-space: nowrap; /* Prevents text from wrapping */
+    white-space: nowrap; /* Prevents text wrapping */
     border-bottom: 2px solid #ddd;
+    font-size: 1rem;
 }
 
 /* Table Data */
 td {
-    padding: 12px;
+    padding: 14px;
     border-bottom: 1px solid #ddd;
     white-space: nowrap;
+    font-size: 1rem;
 }
 
 /* Action Dropdown and Button */
 .actions select {
-    padding: 8px;
+    padding: 10px;
     border-radius: 4px;
     border: 1px solid #ddd;
     width: 100%;
+    font-size: 1rem;
 }
 
 .actions button {
     background-color: #28a745;
     color: white;
     border: none;
-    padding: 8px 12px;
+    padding: 10px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin-top: 5px;
     width: 100%;
 }
@@ -83,17 +95,42 @@ td {
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
     .container {
-        flex-direction: column;
+        max-width: 98vw;
     }
     
     .panel {
-        min-width: auto;
+        min-width: 90%;
+        max-width: 100%;
+    }
+    
+    th, td {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        max-width: 100%;
+        padding: 10px;
+    }
+    
+    .panel {
         width: 100%;
+        max-height: 600px; /* Allow more height on smaller screens */
     }
     
     th, td {
         padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .actions select,
+    .actions button {
+        font-size: 0.9rem;
+        padding: 8px;
     }
 }
