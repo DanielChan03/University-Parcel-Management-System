@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, session, flash, redirect, url_for, request, jsonify
 from flask_login import current_user, login_required
-from .models import Admin, StudentStaff, Parcel, ParcelStatus,Waitlist, ParcelManager, Courier, db, SmartLocker
+from .models import  Parcel, ParcelStatus,Waitlist, ParcelManager, Courier, db, SmartLocker
 from werkzeug.security import generate_password_hash
 import random
 
@@ -38,3 +38,11 @@ def parcel_manager_dashboard():
         pending_parcels = pending_parcels,
         locker_status = locker_status
     )
+
+def update_locker_status(Locker_ID, Locker_Status):
+    # Update locker status
+    data = request.get_json()
+
+    
+    
+

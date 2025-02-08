@@ -12,24 +12,54 @@ views = Blueprint('views', __name__)
 def home():
     return render_template("StudentStaff/home.html", user=current_user)
 
+@views.route('/dashboard', methods=['GET'])
+@login_required
+def dashboard():
+    user_id = current_user.User_ID
+
+    sent_parcels = Parcel.query.filter_by(Sender_User_ID=user_id).all()
+    received_parcels = Parcel.query.filter_by(Recipient_User_ID=user_id).all()
+
+    total_sent_parcels = len(sent_parcels)
+    total_received_parcels = len(received_parcels)
+    pending_parcels = sum(1 for parcel in received_parcels if parcel.Parcel_Received_at is None)
+
+    feedbacks = session.get('feedbacks', {}).get(user_id, [])
+    not_responded_feedback = sum(1 for feedback in feedbacks if feedback['admin_response'] == 'Not Responded')
+
+    notifications = session.get('notifications', [])
+    notifications = [{'message': msg} for msg in notifications]
+
+
+
+    return render_template(
+        'StudentStaff/StudentStaffDashboard.html',
+        user=current_user,
+        total_sent_parcels=total_sent_parcels,
+        total_received_parcels=total_received_parcels,
+        pending_parcels=pending_parcels,
+        not_responded_feedback=not_responded_feedback,
+        notifications=notifications
+    )
+
+
 @views.route('/submit_feedback', methods=['GET', 'POST'])
 @login_required
 def submit_feedback():
-    user_id = str(current_user.User_ID)  # Convert to string for consistency
-    feedbacks = session.get('feedbacks', {}).get(user_id, [])  # Get only the logged-in user's feedback
-
+    feedbacks = session.get('feedbacks', {})
     if request.method == 'POST':
         content = request.form['content']
         feedback_type = request.form['feedback_type']
 
         if content:
+            user_id = str(current_user.User_ID)  # Ensure consistent key type
             user_name = current_user.User_Name  
 
-            # Ensure session has a feedbacks dictionary
+            # Initialize feedbacks storage if not present
             if 'feedbacks' not in session:
                 session['feedbacks'] = {}
 
-            # Ensure the current user has a list for storing feedback
+            # Ensure the user has a list to store multiple feedback entries
             if user_id not in session['feedbacks']:
                 session['feedbacks'][user_id] = []
 
@@ -38,15 +68,13 @@ def submit_feedback():
                 'name': user_name,  
                 'content': content,
                 'feedback_type': feedback_type,
-                'admin_response': 'Not Responded'  
+                'admin_response': 'Not Responded'  # New field added
             })
 
-            session.modified = True  # Mark session as modified
-
             flash('Your feedback has been submitted successfully.', 'success')
-            return redirect(url_for('views.submit_feedback')) 
 
     return render_template('StudentStaff/StudentStaffFeedback.html', feedbacks=feedbacks)
+
 
 @views.route('/send_parcel', methods=['GET', 'POST'])
 @login_required
@@ -137,9 +165,13 @@ def send_parcel():
             flash('No manager found for the receiver university. Please contact support.', 'error')
             return redirect(url_for('views.send_parcel'))
 
+        parcel_id = f"PAR{''.join(random.choices('0123456789', k=8))}"
+        while Parcel.query.filter_by(Parcel_ID=parcel_id).first():
+            parcel_id = f"PAR{''.join(random.choices('0123456789', k=8))}"    
+
         # Create a new parcel entry
         new_parcel = Parcel(
-            Parcel_ID=f"PAR{''.join(random.choices('0123456789', k=8))}",
+            Parcel_ID=parcel_id,
             Sender_User_ID=sender_user_id,
             Recipient_User_ID=receiver_user_id,
             Send_Locker_ID=send_locker_id,
@@ -151,6 +183,11 @@ def send_parcel():
         )
         db.session.add(new_parcel)
         db.session.commit()
+
+        if 'notifications' not in session:
+            session['notifications'] = []
+        session['notifications'].append(f"New parcel sent! Tracking Number: {parcel_id}. Please place it in Locker ID: {send_locker_id}.")
+        session.modified = True
 
         flash(f'Your parcel has been sent. Please place it in Locker ID: {send_locker_id}.', 'success')
         return redirect(url_for('views.send_parcel'))

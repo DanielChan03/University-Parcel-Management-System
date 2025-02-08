@@ -1,13 +1,12 @@
 {% extends "Courier/CourierBase.html" %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Report Parcel Issue</title>
-  <link rel="stylesheet" href="Couriercss/CourierReportDelivery.css">
-</head>
-<body>
+
+{% block title %}Report Parcel Issue{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='Couriercss/CourierReportDelivery.css') }}">
+{% endblock %}
+
+{% block content %}
   <div class="container">
     <div class="panel">
       <h2>Report Delivery Issue</h2>
@@ -32,5 +31,4 @@
       </form>
     </div>
   </div>
-</body>
-</html>
+{% endblock %}

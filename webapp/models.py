@@ -68,6 +68,10 @@ class ParcelManager(db.Model, UserMixin):
     Manager_Contact = db.Column(db.String(20), nullable=False)
     Manager_Work_Branch = db.Column(db.String(20), nullable=False)
 
+    
+    def get_id(self):
+        return str(self.Manager_ID) 
+
     @staticmethod
     def generate_manager_id():
         while True:

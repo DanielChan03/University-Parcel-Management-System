@@ -1,14 +1,14 @@
-{% extends "ParcelManager/ParcelManagerBase.html" %}
+{% extends "Universal/UniversalBase.html" %}
 
 {% block title %}Parcel Manager Login{% endblock %}
 
 {% block styles %} 
-    <link rel = "stylesheet" href = "{{ url_for('static', filename = 'ParcelManagerLogin.css')}}">
+    <link rel = "stylesheet" href = "{{ url_for('static', filename = 'ParcelManagercss/ParcelManagerLogin.css')}}">
 {% endblock %}
 
 
 {% block content %}
-    <div class = "ParcelManagerLogin-container">
+    <div class = "login-container">
         <form method="POST" class = "login-form">
             <h3 class="form-title">Parcel Manager Login</h3>
             <div class = "form-group">
