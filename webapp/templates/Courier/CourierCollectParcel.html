@@ -13,306 +13,253 @@
 
     <!-- Search by Date -->
     <div class="search-by-date">
-      <input type="date" id="searchDate" placeholder="Search by date">
-      <button onclick="searchByDate()">Search</button>
+        <input type="date" id="searchDate" placeholder="Search by date">
+        <button onclick="searchByDate()">Search</button>
     </div>
 
     <!-- Display message if no deliveries found -->
     <div id="delivery-list">
-    {% if message %}
-      <div class="no-deliveries-message">{{ message }}</div>
-    {% elif deliveries %}
-      <!-- Display the filtered deliveries -->
-    <!-- Delivery List Panel -->
-    <div class="panel">
-      <h2>Delivery List</h2>
-      {% for delivery in deliveries %}
-        <div class="delivery-group">
-          <h3 onclick="toggleDetails('{{ delivery.Delivery_ID }}')">
-            <span class="arrow">▶</span>
-            {{ delivery.Delivery_ID }}, {{ delivery.Delivery_Date }}
-          </h3>
-          <div id="{{ delivery.Delivery_ID }}" class="parcel-details">
-            <table>
-              <thead>
-                <tr>
-                  <th>Parcel ID</th>
-                  <th>Sender</th>
-                  <th>Recipient</th>
-                  <th>Destination</th>
-                  <th>Status</th>
-                  <th>Mark Collected</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for parcel in delivery.Parcels %}
-                  <tr>
-                    <td>{{ parcel.Parcel_ID }}</td>
-                    <td>{{ parcel.Sender }}</td>
-                    <td>{{ parcel.Recipient }}</td>
-                    <td>{{ parcel.Destination }}</td>
-                    <td>  <span id="status-{{ parcel.Parcel_ID }}">{{ parcel.Status }}</span></td>
-                    <td>
-                      <input type="checkbox" 
-                             id="collected-{{ parcel.Parcel_ID }}" 
-                             onclick="toggleCollectStatus('{{ parcel.Parcel_ID }}')">
-                    </td>
-                  </tr>
+        {% if message %}
+            <div class="no-deliveries-message">{{ message }}</div>
+        {% elif deliveries %}
+            <!-- Delivery List Panel -->
+            <div class="panel">
+                <h2>Delivery List</h2>
+                {% for delivery in deliveries %}
+                    <div class="delivery-group">
+                        <h3 onclick="toggleDetails('{{ delivery.Delivery_ID }}')">
+                            <span class="arrow">▶</span>
+                            {{ delivery.Delivery_ID }}, {{ delivery.Delivery_Date }}
+                        </h3>
+                        <div id="{{ delivery.Delivery_ID }}" class="parcel-details">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Parcel ID</th>
+                                        <th>Sender</th>
+                                        <th>Recipient</th>
+                                        <th>Destination</th>
+                                        <th>Status</th>
+                                        <th>Mark Collected</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for parcel in delivery.Parcels %}
+                                        <tr>
+                                            <td>{{ parcel.Parcel_ID }}</td>
+                                            <td>{{ parcel.Sender }}</td>
+                                            <td>{{ parcel.Recipient }}</td>
+                                            <td>{{ parcel.Destination }}</td>
+                                            <td><span id="status-{{ parcel.Parcel_ID }}">{{ parcel.Status }}</span></td>
+                                            <td>
+                                                <input type="checkbox"
+                                                       id="collected-{{ parcel.Parcel_ID }}"
+                                                       data-parcel-id="{{ parcel.Parcel_ID }}">
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    <tr class="done-row">
+                                        <td colspan="6" style="text-align: right;">
+                                            <button class="done-button" data-delivery-id="{{ delivery.Delivery_ID }}">Done</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 {% endfor %}
-                <tr class="done-row">
-                  <td colspan="6" style="text-align: right;">
-                    <button class="done-button" onclick="saveCollectedStatus('{{ delivery.Delivery_ID }}')">Done</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      {% endfor %}
-    </div>
-    {% else %}
-      <div class="no-deliveries-message">No deliveries found for the selected date.</div>
-    {% endif %}
-  </div>
-
-  <!-- View Parcel Manager Button -->
-  <a href="{{ url_for('courier.courierViewManagerList') }}" class="view-parcel-manager">
-    View Parcel Manager
-  </a>
-
-  <script>
-    // Function to toggle parcel details visibility
-    function toggleDetails(deliveryId) {
-      const details = document.getElementById(deliveryId);
-      const arrow = details.previousElementSibling.querySelector('.arrow');
-      details.classList.toggle('open');
-      arrow.classList.toggle('open');
-    }
-
-// Function to format date as YYYY-MM-DD
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
-  // Function to search deliveries by date
-  function searchByDate() {
-    const searchDate = document.getElementById('searchDate').value;
-    if (!searchDate) {
-      alert('Please select a date to search.');
-      return;
-    }
-
-    // Create an AJAX request to send the search date
-    fetch(`/courier/collect-parcel?searchDate=${searchDate}`)
-      .then(response => response.json())
-      .then(data => {
-        if (data.message) {
-          // Display a message if no deliveries are found
-          document.getElementById('delivery-list').innerHTML = `<div class="no-deliveries-message">${data.message}</div>`;
-        } else {
-          // Update the delivery list with the filtered data
-          const deliveryList = data.deliveries.map(delivery => `
-            <div class="delivery-group">
-              <h3 onclick="toggleDetails('${delivery.Delivery_ID}')">
-                <span class="arrow">▶</span>
-                ${delivery.Delivery_ID}, ${formatDate(delivery.Delivery_Date)}
-              </h3>
-              <div id="${delivery.Delivery_ID}" class="parcel-details">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Parcel ID</th>
-                      <th>Sender</th>
-                      <th>Recipient</th>
-                      <th>Destination</th>
-                      <th>Status</th>
-                      <th>Mark Collected</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    ${delivery.Parcels.map(parcel => `
-                      <tr>
-                        <td>${parcel.Parcel_ID}</td>
-                        <td>${parcel.Sender}</td>
-                        <td>${parcel.Recipient}</td>
-                        <td>${parcel.Destination}</td>
-                        <td><span id="status-${parcel.Parcel_ID}">${parcel.Status}</span></td>
-                        <td>
-                          <input type="checkbox" 
-                                 id="collected-${parcel.Parcel_ID}" 
-                                 onclick="toggleCollectStatus('${parcel.Parcel_ID}')">
-                        </td>
-                      </tr>
-                    `).join('')}
-                    <tr class="done-row">
-                      <td colspan="6" style="text-align: right;">
-                        <button class="done-button" onclick="saveCollectedStatus('${delivery.Delivery_ID}')">Done</button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
             </div>
-          `).join('');
-          document.getElementById('delivery-list').innerHTML = `<div class="panel">${deliveryList}</div>`;
+        {% else %}
+            <div class="no-deliveries-message">No deliveries found for the selected date.</div>
+        {% endif %}
+    </div>
 
-          // Restore collected status from localStorage
-          restoreCollectedCheckboxes();
-        }
-      })
-      .catch(error => console.error('Error:', error));
-  }
+    <!-- View Parcel Manager Button -->
+    <a href="{{ url_for('courier.courierViewManagerList') }}" class="view-parcel-manager">
+        View Parcel Manager
+    </a>
 
-// Function to restore checkboxes after updating delivery list
-function restoreCollectedCheckboxes() {
-    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        const parcelId = checkbox.id.split('-')[1];
-        const storedState = localStorage.getItem(`collected-${parcelId}`);
-
-        if (storedState === "true") {
-            checkbox.checked = true;
-        }
-
-        // Disable checkbox if status is neither "Ready to Pickup" nor "Parcel Collected"
-        const statusElement = document.querySelector(`#status-${parcelId}`);
-        const statusText = statusElement ? statusElement.textContent.trim() : "";
-        if (statusText !== "Ready to Pickup" && statusText !== "Parcel Collected") {
-            checkbox.disabled = true;
+    <script>
+        // Function to toggle parcel details visibility
+        function toggleDetails(deliveryId) {
+            const details = document.getElementById(deliveryId);
+            const arrow = details.previousElementSibling.querySelector('.arrow');
+            details.classList.toggle('open');
+            arrow.classList.toggle('open');
         }
 
-        checkbox.addEventListener("change", function () {
-            if (!checkbox.disabled) {
-                localStorage.setItem(`collected-${parcelId}`, checkbox.checked);
+        // Function to format date as YYYY-MM-DD
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Function to search deliveries by date
+        function searchByDate() {
+            const searchDate = document.getElementById('searchDate').value;
+            if (!searchDate) {
+                alert('Please select a date to search.');
+                return;
+            }
+
+            // Create an AJAX request to send the search date
+            fetch(`/courier/collect-parcel?searchDate=${searchDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        // Display a message if no deliveries are found
+                        document.getElementById('delivery-list').innerHTML = `<div class="no-deliveries-message">${data.message}</div>`;
+                    } else {
+                        // Update the delivery list with the filtered data
+                        const deliveryList = data.deliveries.map(delivery => `
+                            <div class="delivery-group">
+                                <h3 onclick="toggleDetails('${delivery.Delivery_ID}')">
+                                    <span class="arrow">▶</span>
+                                    ${delivery.Delivery_ID}, ${formatDate(delivery.Delivery_Date)}
+                                </h3>
+                                <div id="${delivery.Delivery_ID}" class="parcel-details">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Parcel ID</th>
+                                                <th>Sender</th>
+                                                <th>Recipient</th>
+                                                <th>Destination</th>
+                                                <th>Status</th>
+                                                <th>Mark Collected</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${delivery.Parcels.map(parcel => `
+                                                <tr>
+                                                    <td>${parcel.Parcel_ID}</td>
+                                                    <td>${parcel.Sender}</td>
+                                                    <td>${parcel.Recipient}</td>
+                                                    <td>${parcel.Destination}</td>
+                                                    <td><span id="status-${parcel.Parcel_ID}">${parcel.Status}</span></td>
+                                                    <td>
+                                                        <input type="checkbox"
+                                                               id="collected-${parcel.Parcel_ID}"
+                                                               data-parcel-id="${parcel.Parcel_ID}">
+                                                    </td>
+                                                </tr>
+                                            `).join('')}
+                                            <tr class="done-row">
+                                                <td colspan="6" style="text-align: right;">
+                                                    <button class="done-button" data-delivery-id="${delivery.Delivery_ID}">Done</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        `).join('');
+                        document.getElementById('delivery-list').innerHTML = `<div class="panel">${deliveryList}</div>`;
+
+                        // Restore collected status from localStorage
+                        restoreCollectedCheckboxes();
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Function to restore checkboxes after updating delivery list
+        function restoreCollectedCheckboxes() {
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                const parcelId = checkbox.dataset.parcelId;
+                const statusElement = document.querySelector(`#status-${parcelId}`);
+                const statusText = statusElement ? statusElement.textContent.trim() : "";
+
+                // If status is "Parcel Collected", check the checkbox by default
+                if (statusText === "Parcel Collected") {
+                    checkbox.checked = true;
+                } else {
+                    // Otherwise, load state from localStorage
+                    const storedState = localStorage.getItem(`collected-${parcelId}`);
+                    if (storedState === "true") {
+                        checkbox.checked = true;
+                    }
+                }
+
+                // Disable checkbox if status is neither "Ready to Pickup" nor "Parcel Collected"
+                if (statusText !== "Ready to Pickup" && statusText !== "Parcel Collected") {
+                    checkbox.disabled = true;
+                }
+            });
+        }
+
+        // Event delegation for "Done" buttons
+        document.addEventListener('click', function (event) {
+            if (event.target.classList.contains('done-button')) {
+                const deliveryId = event.target.dataset.deliveryId;
+                saveCollectedStatus(deliveryId);
             }
         });
-    });
-}
 
-      // Function to open all deliveries by default
-document.addEventListener('DOMContentLoaded', function () {
-    const allDeliveries = document.querySelectorAll('.delivery-group'); // Get all delivery groups
-    allDeliveries.forEach(delivery => {
-        const details = delivery.querySelector('.parcel-details');
-        const arrow = delivery.querySelector('.arrow');
-        
-        // Open all deliveries by default
-        details.classList.add('open');
-        arrow.classList.add('open');
-    });
-});
+        // Function to handle "Done" button click and update backend
+        function saveCollectedStatus(deliveryId) {
+            const checkboxes = document.querySelectorAll(`#${deliveryId} input[type="checkbox"]`);
+            let collectedParcels = [];
+            let uncollectedParcels = [];
 
-    // Function to toggle the checkbox state based on status
-    function toggleCollectStatus(parcelId) {
-      var checkbox = document.getElementById("collected-" + parcelId);
-      var status = document.querySelector(`#status-${parcelId}`).textContent;
+            checkboxes.forEach(checkbox => {
+                const parcelId = checkbox.dataset.parcelId;
+                const statusElement = document.querySelector(`#status-${parcelId}`);
+                const statusText = statusElement ? statusElement.textContent.trim() : "";
 
-      if (status === 'Ready to Pickup' || status === 'Parcel Collected') {
-          checkbox.disabled = false;
-      } else {
-          checkbox.disabled = true;
-      }
-    }
+                if (checkbox.checked && statusText === "Ready to Pickup") {
+                    collectedParcels.push(parcelId);
+                } else if (!checkbox.checked && statusText === "Parcel Collected") {
+                    uncollectedParcels.push(parcelId);
+                }
 
-    // Function to update parcel status in the backend
-    function updateParcelStatus(parcelId, newStatus) {
-      fetch('/collect-parcel', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ parcel_id: parcelId, new_status: newStatus }),
-      })
-      .then(response => response.json())
-      .then(data => {
-          console.log('Status updated:', data);
-         // location.reload();  // Reload page to reflect updated status
-      })
-      .catch(error => console.error('Error:', error));
-    }
-    document.addEventListener("DOMContentLoaded", function () {
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-
-    checkboxes.forEach(checkbox => {
-        const parcelId = checkbox.id.split('-')[1];
-        const statusElement = document.querySelector(`#status-${parcelId}`);
-        const statusText = statusElement ? statusElement.textContent.trim() : "";
-
-        // If status is "Parcel Collected", check the checkbox by default
-        if (statusText === "Parcel Collected") {
-            checkbox.checked = true;
-        } else {
-            // Otherwise, load state from localStorage
-            const storedState = localStorage.getItem(`collected-${parcelId}`);
-            if (storedState === "true") {
-                checkbox.checked = true;
-            }
-        }
-
-        // Disable checkbox if status is neither "Ready to Pickup" nor "Parcel Collected"
-        if (statusText !== "Ready to Pickup" && statusText !== "Parcel Collected") {
-            checkbox.disabled = true;
-        }
-
-        // Save state when checkbox is clicked
-        checkbox.addEventListener("change", function () {
-            if (!checkbox.disabled) {
+                // Save checkbox state to localStorage only when "Done" is clicked
                 localStorage.setItem(`collected-${parcelId}`, checkbox.checked);
+            });
+
+            if (collectedParcels.length === 0 && uncollectedParcels.length === 0) {
+                alert("No changes detected.");
+                return;
             }
+
+            // Send update request to backend
+            fetch('/courier/collect-parcel', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    collectedParcels: collectedParcels,
+                    uncollectedParcels: uncollectedParcels
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Parcel statuses updated successfully.");
+                        location.reload(); // Refresh to reflect changes
+                    } else {
+                        alert("Failed to update parcel statuses.");
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        }
+
+        // Open all deliveries by default on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            const allDeliveries = document.querySelectorAll('.delivery-group');
+            allDeliveries.forEach(delivery => {
+                const details = delivery.querySelector('.parcel-details');
+                const arrow = delivery.querySelector('.arrow');
+                details.classList.add('open');
+                arrow.classList.add('open');
+            });
+
+            // Restore checkbox states
+            restoreCollectedCheckboxes();
         });
-    });
-});
-
-// Function to handle "Done" button click and update backend
-function saveCollectedStatus(deliveryId) {
-    const checkboxes = document.querySelectorAll(`#${deliveryId} input[type="checkbox"]`);
-    let collectedParcels = [];
-    let uncollectedParcels = [];
-
-    checkboxes.forEach(checkbox => {
-        const parcelId = checkbox.id.split('-')[1];
-        const statusElement = document.querySelector(`#status-${parcelId}`);
-        const statusText = statusElement ? statusElement.textContent.trim() : "";
-
-        if (checkbox.checked && statusText === "Ready to Pickup") {
-            // If status is "Ready to Pickup" and checked, mark as collected
-            collectedParcels.push(parcelId);
-        } else if (!checkbox.checked && statusText === "Parcel Collected") {
-            // If status is "Parcel Collected" and unchecked, revert to "Ready to Pickup"
-            uncollectedParcels.push(parcelId);
-        }
-    });
-
-    if (collectedParcels.length === 0 && uncollectedParcels.length === 0) {
-        alert("No changes detected.");
-        return;
-    }
-
-    // Send update request to backend
-    fetch('/courier/collect-parcel', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-            collectedParcels: collectedParcels, 
-            uncollectedParcels: uncollectedParcels 
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert("Parcel statuses updated successfully.");
-            location.reload(); // Refresh to reflect changes
-        } else {
-            alert("Failed to update parcel statuses.");
-        }
-    })
-    .catch(error => console.error("Error:", error));
-}
-
-  </script>
+    </script>
 {% endblock %}
