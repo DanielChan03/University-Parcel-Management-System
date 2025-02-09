@@ -156,7 +156,7 @@
 /* Flash message container */
 .flash-container {
     position: fixed;  /* Keeps it on top of the page */
-    top: 10px;  /* Adjust top position */
+    top: 70px;  /* Adjust top position */
     left: 50%;
     transform: translateX(-50%);  /* Center the message */
     width: 80%;
@@ -206,7 +206,7 @@
 
 /* Flash message fade-out effect */
 .flash-message {
-    animation: fade-out 1s ease-in-out forwards;
+    animation: fade-out 8s ease-in-out forwards;
 }
 
 @keyframes fade-out {

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, session, flash, redirect, url_for, request, jsonify
 from flask_login import current_user, login_required
-from .models import  Parcel, ParcelStatus, Waitlist, ParcelManager, Courier, SmartLocker, db
+from .models import  Parcel, ParcelStatus, Waitlist, ParcelManager, Courier, SmartLocker, Delivery, db
 from werkzeug.security import generate_password_hash
 import random
 
@@ -55,7 +55,14 @@ def assign_parcel_to_courier():
         if parcel and courier:
             # Check if the parcel already has a delivery assigned
             if parcel.Delivery_ID:
-                flash(f"Parcel {parcel_id} is already assigned!", "warning")
+                # Update the existing delivery record with the new courier_id
+                delivery = Delivery.query.get(parcel.Delivery_ID)
+                if delivery:
+                    delivery.Courier_ID = courier.Courier_ID
+                    db.session.commit()
+                    flash(f"Parcel {parcel_id} reassigned to Courier {courier.Courier_ID} successfully!", "success")
+                else:
+                    flash(f"Delivery record not found for Parcel {parcel_id}!", "error")
             else:
                 # Create a new delivery record
                 new_delivery = Delivery(
@@ -99,5 +106,5 @@ def assign_parcel_to_courier():
             'Status': status
         })
 
-    return render_template('ParcelManager/AssignParcelToCourier.html', parcels=parcel_data, couriers=couriers)
+    return render_template('ParcelManager/AssignParcelToCourier.html', parcels=parcel_data, couriers=couriers) 
 
