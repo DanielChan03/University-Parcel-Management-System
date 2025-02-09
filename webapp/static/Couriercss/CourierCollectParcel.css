@@ -1,55 +1,73 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 20px;
+    padding: 0; /* Ensure no extra padding at the body level */
     background-color: #f4f4f9;
     position: relative;
     min-height: 100vh;
-  }
-  
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  .panel {
+}
+
+/* Ensure the container fits well on all screen sizes */
+.container {
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.container h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+/* Panel that wraps the delivery list and search section */
+.panel {
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
-  }
-  
-  .panel h2 {
+    margin-top: 20px;
+}
+
+/* Ensure the heading in panel has a good margin and size */
+.panel h2 {
     margin-top: 0;
     font-size: 1.5rem;
     color: #333;
-  }
-  
-  table {
+}
+
+/* Table styles with proper responsiveness */
+table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
-  }
-  
-  th, td {
+}
+
+/* Table cell padding and appearance */
+th, td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #ddd;
-  }
-  
-  th {
+}
+
+/* Make sure headers stand out and have a good background */
+th {
     background-color: #f8f9fa;
     font-weight: bold;
-  }
-  
-  .delivery-group {
+}
+
+/* Style delivery group for readability */
+.delivery-group {
     background-color: #e9ecef;
     padding: 10px;
     margin-top: 10px;
     border-radius: 4px;
-  }
-  
-  .delivery-group h3 {
+}
+
+/* Delivery group heading with better spacing and font size */
+.delivery-group h3 {
     margin: 0;
     font-size: 1.2rem;
     color: #495057;
@@ -57,41 +75,44 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-  }
-  
-  .delivery-group h3 .arrow {
+}
+
+/* Toggle arrow style */
+.delivery-group h3 .arrow {
     font-size: 1.2rem;
     transition: transform 0.2s ease-in-out;
-  }
-  
-  .delivery-group h3 .arrow.open {
+}
+
+.delivery-group h3 .arrow.open {
     transform: rotate(90deg);
-  }
-  
-  .parcel-details {
-    display: none; /* Hidden by default */
+}
+
+/* Parcel details should be hidden by default */
+.parcel-details {
+    display: none;
     margin-top: 10px;
-  }
-  
-  .parcel-details.open {
-    display: block; /* Show when toggled */
-  }
-  
-  .search-by-date {
+}
+
+.parcel-details.open {
+    display: block;
+}
+
+/* Search input styling */
+.search-by-date {
     margin-top: 20px;
     display: flex;
     gap: 10px;
     align-items: center;
-  }
-  
-  .search-by-date input[type="date"] {
+}
+
+.search-by-date input[type="date"] {
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 1rem;
-  }
-  
-  .search-by-date button {
+}
+
+.search-by-date button {
     padding: 8px 12px;
     background-color: #28a745;
     color: white;
@@ -99,19 +120,21 @@ body {
     border-radius: 4px;
     cursor: pointer;
     font-size: 1rem;
-  }
-  
-  .search-by-date button:hover {
+}
+
+.search-by-date button:hover {
     background-color: #218838;
-  }
-  
-  .mark-collected {
+}
+
+/* Styles for mark collected section */
+.mark-collected {
     display: flex;
     align-items: center;
     gap: 8px;
-  }
-  
-  .done-button {
+}
+
+/* Styling the Done button */
+.done-button {
     margin-top: 10px;
     padding: 8px 16px;
     background-color: #007bff;
@@ -120,37 +143,74 @@ body {
     border-radius: 4px;
     cursor: pointer;
     font-size: 1rem;
-  }
-  
-  .done-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .done-row {
-    text-align: right;
-  }
+}
 
-  .view-parcel-manager {
+.done-button:hover {
+    background-color: #0056b3;
+}
+
+/* Style the done row for alignment */
+.done-row {
+    text-align: right;
+}
+
+/* Floating button for parcel manager link */
+.view-parcel-manager {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    padding: 12px 24px;  /* Adjust padding for better sizing */
-    background-color: #ffc107; /* Full yellow background */
-    color: #000000; /* Black text */
+    padding: 12px 24px;
+    background-color: #ffc107;
+    color: #000000;
     text-align: center;
-    display: inline-block; /* Ensure it behaves like a button */
-    text-decoration: none; /* Remove underline */
+    display: inline-block;
+    text-decoration: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 1.1rem;  /* Slightly increase font size */
+    font-size: 1.1rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
 }
 
 .view-parcel-manager:hover {
-    background-color: #ffc107; /* Keep fully yellow on hover */
+    background-color: #f8c200; /* Slightly darken on hover */
 }
 
 .view-parcel-manager:active {
-    background-color: #ffc107; /* Keep fully yellow when clicked */
+    background-color: #e6b800; /* Slightly darken when clicked */
+}
+
+/* Responsiveness for small screens */
+@media (max-width: 768px) {
+    /* Adjust container and panel width for smaller screens */
+    .container, .panel {
+        width: 100%;
+        margin: 10px;
+    }
+
+    /* Stack delivery group elements for smaller screens */
+    .delivery-group {
+        flex-direction: column;
+    }
+
+    /* Style for buttons */
+    .search-by-date button, .done-button {
+        margin-top: 20px;
+        gap: 10px;
+        align-items: center;
+        justify-content: flex-end;
+        /* width: 100%;
+        font-size: 1.2rem; */
+    }
+
+    /* Ensure all text inside table cells is readable */
+    th, td {
+        font-size: 1rem;
+    }
+
+    /* Ensure floating button is not too big on mobile */
+    .view-parcel-manager {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
 }
