@@ -147,3 +147,92 @@ def organize():
 
     return render_template('ParcelManager/AssignParcelToCourier.html', parcels=parcel_data, couriers=couriers)
 
+@parcel_manager.route('/update_parcel_status', methods=['GET', 'POST'])
+def update_parcel_status():
+    # Fetch all parcels from database
+    parcels = Parcel.query.all()
+    statuses = ParcelStatus.query.all()
+
+
+    if request.method == 'POST':
+        parcelID = request.form['Parcel_ID']
+        updateStatus = request.form.get('Update_Status')
+
+        try:
+            # Find the existing parcel status record
+            parcel_status = ParcelStatus.query.filter_by(Parcel_ID=parcelID).first()
+
+            if parcel_status:
+                # Update the status type and timestamp
+                parcel_status.Status_Type = updateStatus
+                parcel_status.Updated_by = current_user.Manager_ID  # Make sure this attribute exists
+                parcel_status.Updated_At = datetime.utcnow()
+            db.session.commit()
+
+            flash('Parcel status updated successfully!', category='success')
+
+            return redirect(url_for('parcel_manager.update_parcel_status'))
+
+
+        except NoResultFound:
+            pass
+
+    return render_template(
+        'ParcelManager/ParcelManagerUpdateParcelStatus.html', 
+        parcels = parcels, 
+        statuses = statuses,
+        )
+
+@parcel_manager.route('/monitor_locker_issue', methods=['GET', 'POST'])
+def monitor_locker_issue():
+    # Get search query
+    lockerFilter = request.args.get('filter')
+
+    if lockerFilter:
+        lockers = SmartLocker.query.filter(SmartLocker.Locker_ID.ilike(f'%{lockerFilter}%')).all()
+    else:
+        lockers = SmartLocker.query.all()
+    
+    return render_template(
+        "ParcelManager/ParcelManagerMonitorLockerIssue.html",
+        lockers = lockers
+    )
+
+
+@parcel_manager.route('/log_arrival_parcel', methods=['GET', 'POST'])
+def log_arrival_parcel():
+    parcels = Parcel.query.all()
+    statuses = ["Verified", "Missing"]
+
+    if request.method == 'POST':
+        parcelID = request.form.get('Parcel_ID')      
+        updateStatus = request.form.get('Update_Status')
+
+        try:
+            # Find the existing parcel status record
+            parcel_status = ParcelStatus.query.filter_by(Parcel_ID=parcelID).first()
+
+            if parcel_status:
+                # Update the status type and timestamp
+                parcel_status.Status_Type = updateStatus
+                parcel_status.Updated_by = current_user.Manager_ID  # Make sure this attribute exists
+                parcel_status.Updated_At = datetime.utcnow()
+                db.session.commit()
+    
+                flash('Parcel status updated successfully!', category='success')
+                
+            else:
+                flash('Parcel status not found!', category='error')
+                
+            return redirect(url_for('parcel_manager.log_arrival_parcel'))
+
+
+        except NoResultFound:
+            pass
+
+    return render_template(
+        'ParcelManager/ParcelManagerLogArrivalParcel.html',
+        parcels = parcels,
+        statuses = statuses,
+        )
+
