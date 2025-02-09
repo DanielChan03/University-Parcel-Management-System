@@ -126,6 +126,7 @@ document.getElementById('back-button').addEventListener('click', () => {
         alert('Reply sent successfully!');
         document.getElementById('reply-form').style.display = 'none';
         document.getElementById('reply-message').value = '';
+        fetchNotifications();
       } else {
         alert(data.message);
       }
