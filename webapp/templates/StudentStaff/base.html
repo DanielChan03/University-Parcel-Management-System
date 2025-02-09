@@ -27,7 +27,12 @@
             <a href="{{ url_for('views.dashboard') }}">Dashboard</a>
             <a href="#">Receive Parcel</a>
             <a href="{{ url_for('views.send_parcel') }}">Send Parcel</a>
+<<<<<<< HEAD
             <a href="{{ url_for('views.track_parcel') }}">Track Parcel</a>
+            <a href="{{ url_for('views.notifications') }}">Notifications</a>
+=======
+            <a href="{{ url_for('views.track_parcel') }}">Track Parcel</a>
+>>>>>>> 8bede80401cd69d2fb7004ccd834915cfe72fe18
             <a href="{{ url_for('views.report_locker_issue') }}">Report Locker Issue</a>
             <a href="{{ url_for('views.submit_feedback') }}">Feedback</a>
         </nav>
@@ -43,10 +48,11 @@
         </button>    
         <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="#">Dashboard</a></li>
+            <li><a href="{{ url_for('views.dashboard') }}">Dashboard</a></li>
             <li><a href="#">Receive Parcel</a></li>
             <li><a href="{{ url_for('views.send_parcel') }}">Send Parcel</a></li>
-            <li><a href="#">Track Parcel</a></li>
+            <li><a href="{{ url_for('views.track_parcel') }}">Track Parcel</a></li>
+            <li><a href="{{ url_for('views.notifications') }}">Notifications</a></li>
             <li><a href="{{ url_for('views.report_locker_issue') }}">Report Locker Issue</a></li>
             <li><a href="{{ url_for('views.submit_feedback') }}">Feedback</a></li>
             <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
