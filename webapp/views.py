@@ -233,6 +233,16 @@ def track_parcel():
 
     return render_template('StudentStaff/TrackParcel.html')
 
+@views.route('/notifications', methods=['GET'])
+@login_required
+def notifications():
+    notifications = session.get('notifications', [])
+
+    notifications = [{'message': msg} for msg in notifications]
+
+    return render_template('StudentStaff/StudentStaffNotification.html', notifications=notifications)
+
+
 
 @views.route('/report_locker_issue', methods=['GET', 'POST'])
 @login_required

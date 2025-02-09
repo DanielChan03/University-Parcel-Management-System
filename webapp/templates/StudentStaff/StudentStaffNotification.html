@@ -1,0 +1,31 @@
+{% extends "StudentStaff/base.html" %}
+
+{% block title %}Notifications - TrackIQ{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='StudentStaffcss/notifications.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="notifications-container">
+    <h1>Your Notifications</h1>
+
+    <!-- 通知列表 -->
+    <div class="notification-list">
+        {% if notifications %}
+            {% for notification in notifications %}
+                <div class="message-box">
+                    <div class="message-content">
+                        <p class="notification-message">{{ notification.message }}</p>
+                        <small class="notification-timestamp">{{ notification.timestamp }}</small>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-notifications">
+                <p>No new notifications.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
