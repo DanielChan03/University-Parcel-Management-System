@@ -21,7 +21,8 @@
           <label><input type="radio" name="issue_type" value="damaged" required> Damaged Parcel</label>
           <label><input type="radio" name="issue_type" value="lost"> Lost Parcel</label>
           <label><input type="radio" name="issue_type" value="delayed"> Delayed Delivery</label>
-          <label><input type="radio" name="issue_type" value="other"> Other</label>
+          <label><input type="radio" name="issue_type" value="other" id="otherIssue"> Other:</label> 
+          <input type="text" id="otherDescription" name="other_description" placeholder="Enter Issue" style="display: none;" maxlength="25">
         </div>
 
         <!-- Issue Description -->
@@ -33,5 +34,26 @@
       </form>
     </div>
   </div>
-{% endblock %}
 
+  <script>
+   document.querySelectorAll('input[name="issue_type"]').forEach((radio) => {
+    radio.addEventListener('change', function () {
+      const otherDescription = document.getElementById('otherDescription');
+      if (document.getElementById('otherIssue').checked) {
+        otherDescription.style.display = 'inline'; // Show input field
+        otherDescription.required = true; // Make required
+      } else {
+        otherDescription.style.display = 'none'; // Hide input field when other options are selected
+        otherDescription.required = false;
+        otherDescription.value = ''; // Clear the input field when hidden
+      }
+    });
+  });
+  document.getElementById('otherDescription').addEventListener('input', function () {
+    if (this.value.length > 25) {
+      this.value = this.value.substring(0, 25); // Trim excess characters
+    }
+  });
+  </script>
+
+{% endblock %}
