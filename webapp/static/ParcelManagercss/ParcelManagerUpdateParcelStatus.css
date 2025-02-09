@@ -1,0 +1,61 @@
+.update-parcel-status-container {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+.form-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.parcel-status-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.parcel-status-table th, .parcel-status-table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.parcel-status-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.status-select {
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
+.update-button {
+    padding: 8px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.update-button:hover {
+    background-color: #45a049;
+}
+
+@media (max-width: 768px) {
+    .parcel-status-table th, .parcel-status-table td {
+        padding: 8px;
+    }
+
+    .status-select {
+        width: 100%;
+    }
+
+    .update-btn {
+        width: 100%;
+    }
+}
