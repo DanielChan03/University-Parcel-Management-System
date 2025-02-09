@@ -4,7 +4,7 @@ from datetime import date
 from sqlalchemy.orm import joinedload
 from sqlalchemy import func, and_
 from flask_login import current_user, login_required
-from .models import Courier, Parcel, ParcelStatus, Delivery,StudentStaff,University, db
+from .models import Courier, Parcel, ParcelStatus, Delivery,StudentStaff,University, Admin, ParcelManager, db
 from werkzeug.security import generate_password_hash
 import random
 
@@ -79,12 +79,12 @@ def courier_dashboard():
 
     # Determine delivery messages
     if active_delivery:
-        today_delivery_message = f"You have a Delivery {active_delivery.Delivery_ID} Today"
+        today_delivery_message = f"You have a Delivery {active_delivery.Delivery_ID} today"
     else:
-        today_delivery_message = "No Delivery Today"
+        today_delivery_message = "No Delivery today"
     
     if scheduled_delivery:
-        future_delivery_message = f"Delivery {scheduled_delivery.Delivery_ID} is Scheduled at {scheduled_delivery.Deliver_Date}"
+        future_delivery_message = f"Delivery {scheduled_delivery.Delivery_ID} is scheduled at {scheduled_delivery.Deliver_Date}"
     else:
         future_delivery_message = "No Future Task"
 
@@ -108,8 +108,6 @@ def view_assigned_parcels():
     return render_template("Courier/CourierAssignedParcels.html", parcels=assigned_parcels)
 
 # Report Parcel
-from flask import redirect, url_for
-
 @courier.route('/report-parcel', methods=['GET', 'POST'])
 @login_required
 def report_parcel():
@@ -162,13 +160,14 @@ def init_notifications():
         session['notifications'] = []
 
 # Add a notification to the session
-def add_notification(recipient_id, title, message):
+def add_notification(recipient_id, title, message, sender_email):
     init_notifications()
     notification = {
         'id': f"NOT{random.randint(100000, 999999)}",  # Generate a unique ID
         'recipient_id': recipient_id,
         'title': title,
         'message': message,
+        'sender_email': sender_email, 
         'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         'is_read': False
     }
@@ -176,9 +175,38 @@ def add_notification(recipient_id, title, message):
     session.modified = True  # Ensure the session is marked as modified
 
 # Get notifications for the current user
-def get_notifications(recipient_id):
+@courier.route('/get-notification/<string:notification_id>', methods=['GET'])
+@login_required
+def get_notifications_by_id(notification_id):
     init_notifications()
-    return [n for n in session['notifications'] if n['recipient_id'] == recipient_id]
+    notification = next((n for n in session['notifications'] if n['id'] == notification_id), None)
+    if notification:
+        return jsonify({'success': True, 'notification': notification})
+    else:
+        return jsonify({'success': False, 'message': 'Notification not found.'}), 404
+    
+@courier.route('/reply-notification/<string:notification_id>', methods=['POST'])
+@login_required
+def reply_notification(notification_id):
+    data = request.get_json()
+    reply_message = data.get('reply_message')
+
+    if not reply_message:
+        return jsonify({'success': False, 'message': 'Reply message is required.'}), 400
+
+    # Fetch the original notification
+    init_notifications()
+    original_notification = next((n for n in session['notifications'] if n['id'] == notification_id), None)
+    if not original_notification:
+        return jsonify({'success': False, 'message': 'Notification not found.'}), 404
+
+    # Get the sender's email (e.g., current user's email)
+    sender_email = current_user.Courier_Email  # Assuming the current user has an email field
+
+    # Send the reply as a new notification to the original sender
+    add_notification(original_notification['recipient_id'], 'Reply to your notification', reply_message, sender_email)
+
+    return jsonify({'success': True, 'message': 'Reply sent successfully.'})
 
 # Mark a notification as read
 def mark_notification_read(notification_id):
@@ -193,8 +221,8 @@ def mark_notification_read(notification_id):
 @courier.route('/notifications', methods=['GET'])
 @login_required
 def notifications_page():
-    
-    return render_template("Courier/CourierNotifications.html")
+    notifications = get_notifications_by_id(current_user.get_id())
+    return render_template("Courier/CourierNotifications.html", notifications=notifications)
 
 # Send Notification
 @courier.route('/send-notification', methods=['POST'])
@@ -208,8 +236,11 @@ def send_notification():
     if not recipient_id or not title or not message:
         return jsonify({'success': False, 'message': 'Missing required fields.'}), 400
 
+    # Determine the sender's email based on the current user's role
+    sender_email = current_user.Courier_Email
+
     # Add the notification to the session
-    add_notification(recipient_id, title, message)
+    add_notification(recipient_id, title, message, sender_email)
 
     return jsonify({'success': True, 'message': 'Notification sent successfully.'})
 
@@ -218,9 +249,8 @@ def send_notification():
 @login_required
 def get_notifications_route():
     # Fetch notifications for the current user
-    notifications = get_notifications(current_user.get_id())
-
-    return jsonify({'success': True, 'notifications': notifications})
+    init_notifications()
+    return jsonify({'success': True, 'notifications': session['notifications']})
 
 # Mark Notification as Read
 @courier.route('/mark-notification-read/<string:notification_id>', methods=['POST'])
@@ -263,21 +293,10 @@ def collect_parcel():
         for parcel_id in uncollected_parcels:
             # Check if the current status is "Parcel Collected"
             latest_status = ParcelStatus.query.filter_by(Parcel_ID=parcel_id).order_by(ParcelStatus.Updated_At.desc()).first()
-            if latest_status and latest_status.Status_Type == 'Parcel Collected':
-                # Generate a unique status ID for Ready to Pickup
-                new_status_id = f"COL{random.randint(100000, 999999)}"
-                while db.session.query(ParcelStatus).filter_by(Status_ID=new_status_id).first():
-                    new_status_id = f"COL{random.randint(100000, 999999)}"  # Regenerate until unique
 
-                # Create a new status entry for Ready to Pickup
-                new_status_entry = ParcelStatus(
-                    Status_ID=new_status_id,
-                    Parcel_ID=parcel_id,
-                    Status_Type='Ready to Pickup',
-                    Updated_by=current_user.Courier_ID,
-                    Updated_At=datetime.now()
-                )
-                db.session.add(new_status_entry)
+            if latest_status and latest_status.Status_Type == 'Parcel Collected':
+                # Delete the latest "Parcel Collected" status entry
+                db.session.delete(latest_status)
 
         db.session.commit()  # Commit all status updates
         return jsonify({'success': True})
