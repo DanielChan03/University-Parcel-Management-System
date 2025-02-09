@@ -100,7 +100,10 @@ class Courier(db.Model, UserMixin):
 
     def get_id(self):
         return str(self.Courier_ID) 
-
+        
+    def get_email(self):
+        return str(self.Courier_Email)
+        
     @staticmethod
     def generate_courier_id():
         while True:
