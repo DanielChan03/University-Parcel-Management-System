@@ -1,15 +1,41 @@
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  padding: 20px;
+  padding: 0; /* Removed extra padding */
   background-color: #f4f4f9;
 }
 
-.container {
-  max-width: 1000px;
-  margin: 0 auto;
+/* Ensure full-width navigation bar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #007bff;
+  color: white;
+  padding: 15px 20px;
 }
 
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 10px 15px;
+}
+
+.navbar a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+/* Full-width container to match dashboard */
+.container {
+  width: 100%;
+  max-width: 1200px; /* Adjusted for better alignment */
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Adjust panel to match dashboard style */
 .panel {
   background: #fff;
   border-radius: 8px;
@@ -17,12 +43,14 @@ body {
   padding: 20px;
 }
 
+/* Header styling */
 .panel h2 {
   margin-top: 0;
   font-size: 1.5rem;
   color: #333;
 }
 
+/* Form styling */
 .report-form {
   display: flex;
   flex-direction: column;
@@ -63,6 +91,7 @@ body {
   background-color: #0056b3;
 }
 
+/* Issue type styling */
 .issue-type {
   display: flex;
   flex-direction: column;
@@ -77,4 +106,42 @@ body {
 
 .issue-type input[type="radio"] {
   margin: 0;
+}
+
+.issue-type .other-input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.issue-type .other-input-container input[type="text"] {
+  display: none;
+  width: 200px;
+  padding: 5px;
+  font-size: 0.9rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar a {
+    padding: 8px;
+    display: block;
+  }
+
+  .report-form button {
+    width: 100%;
+    font-size: 1.2rem;
+  }
 }
