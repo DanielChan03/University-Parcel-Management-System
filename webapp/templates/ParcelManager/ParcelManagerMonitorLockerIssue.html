@@ -1,0 +1,44 @@
+{% extends "ParcelManager/ParcelManagerBase.html" %}
+
+{% block title %}Monitor Locker Issue{% endblock %}
+
+{% block styles %}
+
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'ParcelManagercss/ParcelManagerMonitorLockerIssue.css')}}">
+
+{% endblock %}
+
+{% block content %}
+
+    <div class = "monitor-locker-issue-container">
+        <h3 class="form-title">Monitor Locker Issue</h3>
+
+        <!-- Filter Section -->
+         <form method="GET" action="{{ url_for('parcel_manager.monitor_locker_issue') }}"></form>
+         <div class = "filter-section">
+            <input type="text" name="filter" placeholder="Search by Locker ID" class = "filter-input">
+            <button type="submit" class = "apply-filter-button">Apply Filters</button>
+         </div>
+        
+        <!-- Locker Table -->
+        <table class="locker-issue-table">
+            <thead>
+                <tr>
+                    <td>Locker ID</td>
+                    <td>Locker Location</td>
+                    <td>Locker Status</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for locker in lockers %}
+                    <tr>
+                        <td>{{ locker.Locker_ID }}</td>
+                        <td>{{ locker.Locker_Location }}</td>
+                        <td>{{ locker.Locker_Status}}</td>
+                    </tr>
+                    {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}
