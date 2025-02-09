@@ -31,16 +31,20 @@
     <div class="courier-dashboard-sections">
         <!-- Current Delivery Record Card -->
         <div class="current-delivery-record-card">
-            <h3>Current Delivery Record</h3>
-            <p>Destination: </p>
-            <p>Number of Parcels Collected:</p>
-            <p>Reported Parcels: </p>
+            <h3>Delivery Record</h3>
+            <p></strong>Last Destination:</strong> {{destination}}</p>
+            <p></strong>Number of Parcels Collected:</strong> {{collected_parcels}}</p>
+         <p></strong> Reported Issues:</strong> {{reported_issues}} </p>
         </div>
 
         <!-- Delivery Activity Card -->
         <div class="delivery-activity-card">
             <h3>Delivery Activity</h3>
-            <p>Delivery D001 is scheduled.</p>
+            <ul>
+                
+                <li>{{today_delivery_message}}</li>
+                <li>{{future_delivery_message}}</li>
+            <ul>
         </div>
 </div>
 {% endblock %}
