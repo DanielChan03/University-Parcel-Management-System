@@ -42,14 +42,14 @@ def parcel_manager_dashboard():
     )
 
 @parcel_manager.route('/organize-parcel', methods=['GET', 'POST'])
-def organize():
+def organize_parcel():
     if request.method == 'POST':
         parcel_id = request.form.get('parcel_id')
         courier_id = request.form.get('courier_id')
 
         if not parcel_id or not courier_id:
             flash("Please select both a parcel and a courier!", "error")
-            return redirect(url_for('parcel_manager.assign_parcel_to_courier'))
+            return redirect(url_for('parcel_manager.organize_parcel'))
 
         parcel = Parcel.query.get(parcel_id)
         courier = Courier.query.get(courier_id)
@@ -121,7 +121,7 @@ def organize():
         else:
             flash("Invalid parcel or courier selected!", "error")
 
-        return redirect(url_for('parcel_manager.assign_parcel_to_courier'))
+        return redirect(url_for('parcel_manager.organize_parcel'))
 
     # Get all parcels with status "Registered"
     parcels = db.session.query(Parcel).join(ParcelStatus).filter(ParcelStatus.Status_Type == 'Registered').all()
@@ -145,7 +145,7 @@ def organize():
             'Status': status
         })
 
-    return render_template('ParcelManager/AssignParcelToCourier.html', parcels=parcel_data, couriers=couriers)
+    return render_template('ParcelManager/OrganizeParcel.html', parcels=parcel_data, couriers=couriers)
 
 @parcel_manager.route('/update_parcel_status', methods=['GET', 'POST'])
 def update_parcel_status():

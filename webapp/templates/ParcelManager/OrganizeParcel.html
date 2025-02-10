@@ -3,7 +3,7 @@
 {% block title %}Assign Parcel to Courier{% endblock %}
 
 {% block styles %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='ParcelManagercss/AssignParcelToCourier.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='ParcelManagercss/OrganizeParcel.css') }}">
 {% endblock %} 
 
 {% block content %}
@@ -33,7 +33,7 @@
           <td>{{ parcel.Destination }}</td> 
           <td>{{ parcel.Status }}</td> 
           <td class="actions">
-            <form method="POST" action="{{ url_for('parcel_manager.assign_parcel_to_courier') }}">
+            <form method="POST" action="{{ url_for('parcel_manager.organize_parcel') }}">
               <!-- Hidden input for parcel ID -->
               <input type="hidden" name="parcel_id" value="{{ parcel.Parcel_ID }}">
               
