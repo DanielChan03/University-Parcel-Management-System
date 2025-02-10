@@ -13,7 +13,7 @@
     />
     {% block styles %}{% endblock %}
 </head>
-<body>
+<body
     <!-- Courier Header Section -->
     <header class="courier-header">
         <button class="sidebar-toggle-btn">
@@ -39,7 +39,7 @@
             </svg> <!-- Close Icon -->
         </button>
         <ul>
-            <li><a href="{{ url_for('courier.courier_dashboard') }}">Profile</a></li>
+            <li><a href="{{ url_for('courier.courier_profile') }}">Profile</a></li>
             <li><a href="{{ url_for('courier.courier_dashboard') }}">Dashboard</a></li>
             <li><a href="{{ url_for('courier_auth.courier_logout') }}">Logout</a></li>
         </ul>
