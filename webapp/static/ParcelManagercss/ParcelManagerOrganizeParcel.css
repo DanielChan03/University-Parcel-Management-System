@@ -76,6 +76,11 @@ input[type="checkbox"] {
     background-color: #218838;
 }
 
+.delivery-fields {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
     .container {
