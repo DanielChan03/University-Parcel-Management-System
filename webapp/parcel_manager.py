@@ -33,6 +33,8 @@ def parcel_manager_dashboard():
     # Fetch locker status
     locker_status = db.session.query(SmartLocker.Locker_Status).all()
 
+    lockers = SmartLocker.query.all()
+
     return render_template(
         "ParcelManager/ParcelManagerDashboard.html",
         parcel_manager = current_user,
@@ -40,7 +42,8 @@ def parcel_manager_dashboard():
         total_received_parcels = total_received_parcels,
         total_delivered_parcels = total_delivered_parcels,
         pending_parcels = pending_parcels,
-        locker_status = locker_status
+        locker_status = locker_status,
+        lockers = lockers
     )
 
 @parcel_manager.route('/organize-parcel', methods=['GET', 'POST'])
@@ -210,15 +213,37 @@ def log_arrival_parcel():
 
 @parcel_manager.route('/assign_parcel_to_locker', methods=['GET', 'POST'])
 def assign_parcel_to_locker():
-    if request.method == 'POST':  # Only handle form submission here
+    if request.method == 'POST':  # Handle form submission
         parcelID = request.form.get('selected_parcel')
         lockerID = request.form.get('selected_locker')
 
-        if not parcelID or not lockerID:
-            flash("Please select both a parcel and a locker!", "error")
+        if not parcelID:
+            flash("Please select a parcel!", "error")
             return redirect(url_for('parcel_manager.assign_parcel_to_locker'))
 
         parcel = Parcel.query.get(parcelID)
+        available_lockers = SmartLocker.query.filter_by(Locker_Status='Available').all()
+
+        if not available_lockers:  
+            waitlist_entry = Waitlist.query.filter_by(Parcel_ID=parcelID).first()
+            if not waitlist_entry:
+                new_waitlist = Waitlist(
+                    Waitlist_ID="WL_" + ''.join(random.choices(string.ascii_uppercase + string.digits, k=8)),
+                    Parcel_ID=parcelID,
+                    Waitlist_Status="Waiting"
+                )
+                db.session.add(new_waitlist)
+                db.session.commit()
+                flash(f"Parcel {parcelID} added to the waitlist!", "info")
+            else:
+                flash(f"Parcel {parcelID} is already in the waitlist!", "warning")
+
+            return redirect(url_for('parcel_manager.assign_parcel_to_locker'))
+
+        if not lockerID:
+            flash("Please select a locker!", "error")
+            return redirect(url_for('parcel_manager.assign_parcel_to_locker'))
+
         locker = SmartLocker.query.get(lockerID)
 
         if parcel and locker:
@@ -230,12 +255,11 @@ def assign_parcel_to_locker():
 
             if parcel_status:
                 parcel_status.Status_Type = new_status_text
-                parcel_status.Updated_by = current_user.Manager_ID  # Ensure current_user is a ParcelManager
+                parcel_status.Updated_by = current_user.Manager_ID
                 parcel_status.Updated_At = datetime.utcnow()
             else:
-                # If status doesn't exist, create a new one
                 new_status = ParcelStatus(
-                    Status_ID="S_" + ''.join(random.choices(string.ascii_uppercase + string.digits, k=10)),  
+                    Status_ID="S_" + ''.join(random.choices(string.ascii_uppercase + string.digits, k=10)),
                     Parcel_ID=parcelID,
                     Status_Type=new_status_text,
                     Updated_by=current_user.Manager_ID,
@@ -248,16 +272,17 @@ def assign_parcel_to_locker():
         else:
             flash("Invalid Parcel or Locker selection!", "error")
 
-        return redirect(url_for('parcel_manager.assign_parcel_to_locker'))  # 🚀 Only redirect after POST
+        return redirect(url_for('parcel_manager.assign_parcel_to_locker'))
 
-    # Handle GET requests - Render the template properly
+    # Handle GET requests - Fetch data
     parcels = db.session.query(Parcel).join(ParcelStatus).filter(ParcelStatus.Status_Type == 'Verified').all()
     lockers = SmartLocker.query.filter_by(Locker_Status='Available').all()
+    locker_count = len(lockers)
 
     return render_template(
         'ParcelManager/ParcelManagerAssignParcelToLocker.html',
         parcels=parcels,
-        lockers=lockers
+        lockers=lockers,
+        locker_count=locker_count 
     )
-    
 
