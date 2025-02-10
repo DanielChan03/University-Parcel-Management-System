@@ -1,0 +1,29 @@
+{% extends "StudentStaff/base.html" %}
+
+{% block title %}Receive Parcel - TrackIQ{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='StudentStaffcss/ReceiveParcel.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="receive-parcel-container">
+    <h1>Receive Parcel</h1>
+
+    <!-- Parcel Information -->
+    <div class="parcel-list">
+        {% if parcel_info %}
+            {% for parcel in parcel_info %}
+                <div class="parcel-card">
+                    <h3>Parcel ID: {{ parcel.parcel_id }}</h3>
+                    <p><strong>Locker ID:</strong> {{ parcel.locker_id }}</p>
+                    <p><strong>Locker Location:</strong> {{ parcel.locker_location }}</p>
+                    <p><strong>OTP:</strong> {{ parcel.otp }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-parcels">No parcels available for receiving.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -25,7 +25,7 @@
         <nav class="navbar">
             <a href="/">Home</a>
             <a href="{{ url_for('views.dashboard') }}">Dashboard</a>
-            <a href="#">Receive Parcel</a>
+            <a href="{{ url_for('views.receive_parcel') }}">Receive Parcel</a>
             <a href="{{ url_for('views.send_parcel') }}">Send Parcel</a>
             <a href="{{ url_for('views.track_parcel') }}">Track Parcel</a>
             <a href="{{ url_for('views.notifications') }}">Notifications</a>
@@ -45,7 +45,7 @@
         <ul>
             <li><a href="/">Home</a></li>
             <li><a href="{{ url_for('views.dashboard') }}">Dashboard</a></li>
-            <li><a href="#">Receive Parcel</a></li>
+            <li><a href="{{ url_for('views.receive_parcel') }}">Receive Parcel</a></li>
             <li><a href="{{ url_for('views.send_parcel') }}">Send Parcel</a></li>
             <li><a href="{{ url_for('views.track_parcel') }}">Track Parcel</a></li>
             <li><a href="{{ url_for('views.notifications') }}">Notifications</a></li>

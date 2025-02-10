@@ -1,0 +1,55 @@
+.receive-parcel-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+}
+
+.receive-parcel-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #2c3e50;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.parcel-list {
+    margin-top: 20px;
+}
+
+.parcel-card {
+    background-color: #f8f9fa;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-left: 6px solid #49b2c6;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.parcel-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.parcel-card h3 {
+    margin: 0 0 10px;
+    color: #34495e;
+    font-size: 1.2rem;
+}
+
+.parcel-card p {
+    margin: 5px 0;
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+.no-parcels {
+    text-align: center;
+    color: #95a5a6;
+    font-style: italic;
+    font-size: 1.1rem;
+}
