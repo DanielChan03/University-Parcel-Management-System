@@ -3,9 +3,7 @@
 {% block title %}Log Arrival Parcel{% endblock %}
 
 {% block styles %}
-
 <link rel="stylesheet" href="{{ url_for('static', filename = 'ParcelManagercss/ParcelManagerLogArrivalParcel.css')}}">
-
 {% endblock %}
 
 {% block content %}
@@ -23,6 +21,7 @@
                 <th>Recipient Name</th>
                 <th>Location</th>
                 <th>Status</th>
+                <th>Reported %</th>
             </tr>
         </thead>
         <tbody>
@@ -31,24 +30,35 @@
                 <tr>
                     <td>{{ parcel.Parcel_ID }}</td>
                     <td>{{ parcel.delivery.Courier_ID }}</td>
-                    <td>{% if parcel.delivery and parcel.delivery.courier %}
-                        {{ parcel.delivery.courier.Courier_Name }}
+                    <td>
+                        {% if parcel.delivery and parcel.delivery.courier %}
+                            {{ parcel.delivery.courier.Courier_Name }}
                         {% else %}
-                        N/A
-                        {% endif %}</td>
+                            N/A
+                        {% endif %}
+                    </td>
                     <td>{{ parcel.recipient.User_ID }}</td>
                     <td>{{ parcel.recipient.User_Name }}</td>
                     <td>{{ parcel.sender.university.University_Name }}</td>
                     <td>
                         <select name="Update_Status" class="status-select">
-                            <option disabled selected></option>
-                            <option value="Verified">Verified</option>
-                            <option value="Missing">Missing</option>
+                            <option disabled selected>Select Status</option>
+                            <option value="Verified">Verified - Collected</option>
+                            <option value="Missing">Verified - Missing</option>
+                            <option value="Damage">Verified - Damage</option>
                         </select>
+                    </td>
+                    <td>
+                        {% if parcel.reported %}
+                            {{ parcel.reported }}%
+                        {% else %}
+                            N/A
+                        {% endif %}
                     </td>
                 </tr>
                 <input type="hidden" name="Parcel_ID" value="{{ parcel.Parcel_ID }}">
-                {% endfor %}
+            </form>
+            {% endfor %}
         </tbody>
     </table>
     <button type="submit" class="update-button">Submit Verification</button>
