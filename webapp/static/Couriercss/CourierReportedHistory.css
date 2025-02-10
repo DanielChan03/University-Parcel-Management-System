@@ -1,0 +1,102 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    position: relative;
+    min-height: 100vh;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.container h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.parcel-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.parcel-table th {
+    background-color: #e9ecef;
+    font-weight: bold;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #ccc;
+}
+
+.parcel-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.parcel-table tr {
+    background-color: #ffffff;
+}
+
+.status-select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+        margin: 10px;
+    }
+
+    .parcel-table th, .parcel-table td {
+        font-size: 1rem;
+        padding: 10px;
+    }
+
+    .update-button {
+        padding: 10px;
+        font-size: 1rem;
+    }
+}
+
+.back-button {
+    background-color: #007bff; /* Blue color */
+    color: white; /* Text color */
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    margin-left: -11px; /* Ensures it aligns more to the left */
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: flex-start; /* Aligns to the left */
+  }
+  
+  .back-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+
+  /* CourierReportedHistory.css */
+.no-issues-found {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 18px;
+    color: #888;
+  }
