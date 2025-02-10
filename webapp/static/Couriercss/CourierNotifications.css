@@ -203,6 +203,11 @@ h2, h3 {
   background-color: #0056b3;
 }
 
+.notification-item.selected {
+  background-color: #f0f8ff; /* Light blue background */
+  border-left: 4px solid #2ac56f; /* Blue left border */
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .notification-section {
