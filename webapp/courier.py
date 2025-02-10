@@ -88,6 +88,11 @@ def courier_dashboard():
     else:
         future_delivery_message = "No Future Task"
 
+       # Count messages sent and received by the current user
+    current_user_email = current_user.Courier_Email
+    messages_sent = count_messages_sent(current_user_email)
+    messages_received = count_messages_received(current_user_email)
+
     return render_template(
         "Courier/CourierDashboard.html",
         courier=current_user,
@@ -97,8 +102,27 @@ def courier_dashboard():
         reported_issues=reported_issues,
         destination=destination,
         today_delivery_message=today_delivery_message,
-        future_delivery_message=future_delivery_message
+        future_delivery_message=future_delivery_message,
+        messages_sent=messages_sent,
+        messages_received=messages_received
     )
+
+def count_messages_sent(current_user_email):
+    init_notifications()  # Ensure notifications are initialized
+
+    # Check if 'notifications' exists and is a list
+    if 'notifications' not in session or not isinstance(session['notifications'], list):
+        return 0  # Return 0 if the key is missing or not a list
+
+    return sum(1 for n in session['notifications'] if 'sender_email' in n and n['sender_email'] == current_user_email)
+
+def count_messages_received(current_user_email):
+    init_notifications()
+
+    if 'notifications' not in session or not isinstance(session['notifications'], list):
+        return 0
+
+    return sum(1 for n in session['notifications'] if 'recipient_email' in n and n['recipient_email'] == current_user_email)
 
 # View Assigned Parcels
 @courier.route('/assigned-parcels', methods=['GET'])
@@ -159,9 +183,22 @@ def init_notifications():
     if 'notifications' not in session:
         session['notifications'] = []
 
+def is_valid_recipient(email):
+    # Check if the email exists in any of the user tables.
+    return (
+        StudentStaff.query.filter_by(User_Email=email).first() or
+        ParcelManager.query.filter_by(Manager_Email=email).first() or
+        Courier.query.filter_by(Courier_Email=email).first()
+    )
+
 # Add a notification to the session
 def add_notification(recipient_email, title, message, sender_email):
     init_notifications()
+
+    if not is_valid_recipient(recipient_email):
+        return {'success': False, 'message': 'Recipient email not found.'}  # Don't add if recipient doesn't exist
+
+
     notification = {
         'id': f"NOT{random.randint(100000, 999999)}",  # Generate a unique ID
         'recipient_email': recipient_email,
@@ -173,6 +210,7 @@ def add_notification(recipient_email, title, message, sender_email):
     }
     session['notifications'].append(notification)
     session.modified = True  # Ensure the session is marked as modified
+    return {'success': True, 'message': 'Message Succesfully sent'} 
 
 # Get notifications for the current user
 @courier.route('/get-notification/<string:notification_id>', methods=['GET'])
@@ -240,9 +278,9 @@ def send_notification():
     sender_email = current_user.Courier_Email
 
     # Add the notification to the session
-    add_notification(recipient_email, title, message, sender_email)
+    result = add_notification(recipient_email, title, message, sender_email)
 
-    return jsonify({'success': True, 'message': 'Notification sent successfully.'})
+    return jsonify(result)
 
 # Get Notifications
 @courier.route('/get-notifications', methods=['GET'])
@@ -435,5 +473,100 @@ def courierViewManagerList():
     
     return render_template('Courier/CourierViewManagerList.html',parcels = parcel_data)
 
+@courier.route('/manage-parcel-status', methods=['GET', 'POST'])
+@login_required
+def manage_parcel_status():
+    if request.method == 'POST':
+        parcel_id = request.form.get('Parcel_ID')
+        new_status = request.form.get('Update_Status')
+
+        if not parcel_id or not new_status:
+            flash("Parcel ID and status are required.", "danger")
+            return redirect(url_for('courier.manage_parcel_status'))
+
+        parcel = Parcel.query.filter_by(Parcel_ID=parcel_id).first()
+        if not parcel:
+            flash("Parcel ID not found.", "danger")
+            return redirect(url_for('courier.manage_parcel_status'))
+
+        delivery = Delivery.query.filter_by(Delivery_ID=parcel.Delivery_ID, Courier_ID=current_user.Courier_ID).first()
+        if not delivery:
+            flash("You are not authorized to update this parcel.", "danger")
+            return redirect(url_for('courier.manage_parcel_status'))
+
+        new_status_id = f"STA{random.randint(100000, 999999)}"
+        while db.session.query(ParcelStatus).filter_by(Status_ID=new_status_id).first():
+            new_status_id = f"STA{random.randint(100000, 999999)}"
+
+        new_status_entry = ParcelStatus(
+            Status_ID=new_status_id,
+            Parcel_ID=parcel_id,
+            Status_Type=new_status,
+            Updated_by=current_user.Courier_ID,
+            Updated_At=datetime.now()
+        )
+        db.session.add(new_status_entry)
+        db.session.commit()
+
+        flash("Parcel status updated successfully!", "success")
+        return redirect(url_for('courier.manage_parcel_status'))
+
+    deliveries = Delivery.query.filter_by(Courier_ID=current_user.Courier_ID).all()
+    delivery_ids = [delivery.Delivery_ID for delivery in deliveries]
+
+    parcels = (
+        Parcel.query
+        .options(
+            joinedload(Parcel.sender),
+            joinedload(Parcel.recipient),
+            joinedload(Parcel.delivery)
+        )
+        .filter(Parcel.Delivery_ID.in_(delivery_ids))
+        .order_by(Parcel.Parcel_ID.asc())
+        .all()
+    )
+
+    allowed_statuses = [
+    "Parcel Collected",
+    "Parcel Outgoing",
+    "In Transit",
+    "Parcel Arrived at University",
+    "Parcel Handed Over to Parcel Manager",
+    "Verified"
+]
+
+    parcel_data = []
+    for parcel in parcels:
+        # Get all statuses for the parcel in descending order
+        status_history = (
+            ParcelStatus.query
+            .filter_by(Parcel_ID=parcel.Parcel_ID)
+            .order_by(ParcelStatus.Updated_At.desc())
+            .all()
+        )
+
+        current_status = None
+        for status in status_history:
+            if status.Status_Type == "Verified":
+                current_status = "Verified"
+                break  # Stop checking after "Verified"
+            if not current_status:
+                current_status = status.Status_Type  # Take the latest before "Verified"
+
+        if current_status:
+            # Allow "Reported - %" dynamically
+            if current_status.startswith("Reported - ") or current_status in allowed_statuses:
+                recipient = StudentStaff.query.filter_by(User_ID=parcel.Recipient_User_ID).first()
+                destination = University.query.filter_by(University_ID=recipient.University_ID).first().University_Name if recipient else 'Recipient information not found'
+
+                parcel_data.append({
+                    'Parcel_ID': parcel.Parcel_ID,
+                    'Sender_Name': parcel.sender.User_Name,
+                    'Recipient_Name': parcel.recipient.User_Name,
+                    'Destination': destination,
+                    'Current_Status': current_status,
+                    'Allowed_Statuses': [status for status in allowed_statuses if status != current_status]
+                })
 
 
+    return render_template("Courier/CourierManageStatus.html", parcels=parcel_data)
