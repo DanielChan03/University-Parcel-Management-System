@@ -2,7 +2,7 @@
 
 {% block title %} Parcel Manager Dashboard {% endblock %}
 
-{% block styles %} 
+{% block styles %}
     <link rel="stylesheet" href="{{ url_for('static', filename='ParcelManagercss/ParcelManagerDashboard.css') }}">
 {% endblock %}
 
@@ -29,16 +29,25 @@
 <div class="dashboard-sections">
     <!-- Parcel Status Card -->
     <div class="status-card">
-        <h2>Parcel Status:</h2>
+        <h2>Parcel Status</h2>
+        <br>
         <p>Number of Parcels Received: {{ total_received_parcels }}</p>
+        <br>
         <p>Number of Parcels Delivered: {{ total_delivered_parcels }}</p>
+        <br>
         <p>Number of Parcels Pending: {{ pending_parcels }}</p>
     </div>
 
     <!-- Locker Status Card -->
     <div class="locker-status-card">
-        <h2>Locker Status:</h2>
-        <p>Check locker availability here.</p>
+        <h2>Locker Status</h2>
+        <ul>
+            {% for locker in lockers %}
+                <li class="locker-status-item {% if locker.Locker_Status == 'Occupied' %}occupied{% else %}available{% endif %}">
+                    {{ locker.Locker_ID }} is {{ locker.Locker_Status }}
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 </div>
 {% endblock %}
