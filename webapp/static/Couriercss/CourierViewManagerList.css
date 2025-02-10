@@ -109,3 +109,10 @@ th {
 .back-button:hover {
   background-color: #0056b3; /* Darker blue on hover */
 }
+
+.no-managers-message {
+  text-align: center;
+  font-size: 1.2em;
+  color: #888;
+  margin-top: 20px;
+}
