@@ -29,7 +29,7 @@
         <div class="send-notification">
           <h3>Send Notification</h3>
           <form id="send-notification-form">
-            <input type="text" id="recipient-id" placeholder="Recipient ID" required>
+            <input type="text" id="recipient-email" placeholder="Recipient email" required>
             <input type="text" id="notification-title" placeholder="Title" required>
             <textarea id="notification-message" placeholder="Message" required maxlength="150" oninput="updateCharCount()"></textarea>
 <p id="charCount">150 characters remaining</p>
@@ -73,6 +73,11 @@
 document.getElementById('notification-list').addEventListener('click', async (event) => {
     const notificationItem = event.target.closest('.notification-item');
     if (notificationItem) {
+      document.querySelectorAll('.notification-item').forEach(item => item.classList.remove('selected'));
+
+      // Add 'selected' class to the clicked notification
+      notificationItem.classList.add('selected');
+      
         const notificationId = notificationItem.dataset.id;
         currentNotificationId = notificationId; // Store the notification ID
 
@@ -84,6 +89,7 @@ document.getElementById('notification-list').addEventListener('click', async (ev
         const data = await response.json();
         if (data.success) {
             document.getElementById('notification-content').innerHTML = `
+                <div class="recipient"><strong>To:</strong> <strong>${data.notification.recipient_email}</strong></div>
                 <div class="title"><strong>Subject:</strong> <strong>${data.notification.title}</strong></div>
     <br>
     <div class="message-time-wrapper">
@@ -126,21 +132,35 @@ document.getElementById('back-button').addEventListener('click', () => {
         alert('Reply sent successfully!');
         document.getElementById('reply-form').style.display = 'none';
         document.getElementById('reply-message').value = '';
-        fetchNotifications();
+        showReplyForm(notificationId);
       } else {
         alert(data.message);
       }
     });
 
+    // Function to show the reply form with original message
+function showReplyForm(notificationId) {
+    const originalMessage = document.getElementById('reply-message').getAttribute('data-original-message');
+
+    // Prefill the textarea with the original message
+    document.getElementById('reply-message').value = `Reply to: \n${originalMessage}\n\n`;
+
+    // Show reply section
+    document.getElementById('reply-section').style.display = 'block';
+
+    // Store notification ID for sending reply
+    document.getElementById('reply-section').setAttribute('data-notification-id', notificationId);
+}
+
     document.getElementById('send-notification-form').addEventListener('submit', async (event) => {
       event.preventDefault();
-      const recipientId = document.getElementById('recipient-id').value;
+      const recipientEmail = document.getElementById('recipient-email').value;
       const title = document.getElementById('notification-title').value;
       const message = document.getElementById('notification-message').value;
       const response = await fetch('/courier/send-notification', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ recipient_id: recipientId, title, message })
+        body: JSON.stringify({ recipient_email: recipientEmail, title, message })
       });
       const data = await response.json();
       if (data.success) {
