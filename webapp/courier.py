@@ -160,11 +160,11 @@ def init_notifications():
         session['notifications'] = []
 
 # Add a notification to the session
-def add_notification(recipient_id, title, message, sender_email):
+def add_notification(recipient_email, title, message, sender_email):
     init_notifications()
     notification = {
         'id': f"NOT{random.randint(100000, 999999)}",  # Generate a unique ID
-        'recipient_id': recipient_id,
+        'recipient_email': recipient_email,
         'title': title,
         'message': message,
         'sender_email': sender_email, 
@@ -204,7 +204,7 @@ def reply_notification(notification_id):
     sender_email = current_user.Courier_Email  # Assuming the current user has an email field
 
     # Send the reply as a new notification to the original sender
-    add_notification(original_notification['recipient_id'], 'Reply to your notification', reply_message, sender_email)
+    add_notification(original_notification['sender_email'], 'Reply to your notification', reply_message, sender_email)
 
     return jsonify({'success': True, 'message': 'Reply sent successfully.'})
 
@@ -229,18 +229,18 @@ def notifications_page():
 @login_required
 def send_notification():
     data = request.get_json()
-    recipient_id = data.get('recipient_id')
+    recipient_email = data.get('recipient_email')
     title = data.get('title')
     message = data.get('message')
 
-    if not recipient_id or not title or not message:
+    if not recipient_email or not title or not message:
         return jsonify({'success': False, 'message': 'Missing required fields.'}), 400
 
     # Determine the sender's email based on the current user's role
     sender_email = current_user.Courier_Email
 
     # Add the notification to the session
-    add_notification(recipient_id, title, message, sender_email)
+    add_notification(recipient_email, title, message, sender_email)
 
     return jsonify({'success': True, 'message': 'Notification sent successfully.'})
 
@@ -250,13 +250,45 @@ def send_notification():
 def get_notifications_route():
     # Fetch notifications for the current user
     init_notifications()
-    return jsonify({'success': True, 'notifications': session['notifications']})
+
+    # Get the current user's email
+    recipient_email = getattr(current_user, 'Courier_Email', None)
+
+    if not recipient_email:
+        return jsonify({'success': False, 'message': 'User email not found.'}), 400
+     # Ensure session['notifications'] is a list before filtering
+    notifications = session.get('notifications', [])
+
+    # Filter notifications for the current recipient
+    user_notifications = [n for n in notifications if n.get('recipient_email') == recipient_email]
+
+    return jsonify({'success': True, 'notifications': user_notifications})
 
 # Mark Notification as Read
 @courier.route('/mark-notification-read/<string:notification_id>', methods=['POST'])
 @login_required
 def mark_notification_read_route(notification_id):
-    mark_notification_read(notification_id)
+    init_notifications()  # Ensure notifications are initialized
+    
+    if 'read_notifications' not in session:
+        session['read_notifications'] = []  # Use a list instead of a set
+
+    notification = next((n for n in session['notifications'] if n['id'] == notification_id), None)
+
+    if not notification:
+        return jsonify({'success': False, 'message': 'Notification not found.'}), 404
+
+    # Ensure only the recipient can mark it as read
+    if notification['recipient_email'] != current_user.Courier_Email:
+        return jsonify({'success': False, 'message': 'You are not allowed to mark this notification as read.'}), 403
+
+    # Store read notification ID in session
+    if notification_id not in session['read_notifications']:
+        session['read_notifications'].append(notification_id)  
+        session.modified = True  # Ensure session is saved
+
+    notification['is_read'] = True  # Mark as read
+
     return jsonify({'success': True, 'message': 'Notification marked as read.'})
 
 # Collect parcel
@@ -402,3 +434,6 @@ def courierViewManagerList():
         parcel_data.append(parcel_info)
     
     return render_template('Courier/CourierViewManagerList.html',parcels = parcel_data)
+
+
+
