@@ -35,6 +35,9 @@
     </div>
   </div>
 
+ <!-- "View Reported History" Button -->
+ <button class="view-history-button" onclick="goBack()">View Reported History</button>
+
   <script>
    document.querySelectorAll('input[name="issue_type"]').forEach((radio) => {
     radio.addEventListener('change', function () {
@@ -54,6 +57,10 @@
       this.value = this.value.substring(0, 25); // Trim excess characters
     }
   });
-  </script>
 
+  function goBack() {
+            window.location.href = "{{ url_for('courier.viewReportedHistory') }}";
+        
+    }
+  </script>
 {% endblock %}
