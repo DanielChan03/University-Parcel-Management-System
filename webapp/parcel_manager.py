@@ -175,8 +175,8 @@ def monitor_locker_issue():
 
 @parcel_manager.route('/log_arrival_parcel', methods=['GET', 'POST'])
 def log_arrival_parcel():
-    parcels = Parcel.query.filter(Parcel.Delivery_ID.isnot(None)).all()
-    statuses = ["Verified", "Missing"]
+    # Fetch parcels that are "Parcel Handed Over to Parcel Manager"
+    parcels = Parcel.query.filter(ParcelStatus.Status_Type == "Parcel Handed Over to Parcel Manager").all()
 
     if request.method == 'POST':
         parcelID = request.form.get('Parcel_ID')      
@@ -187,8 +187,14 @@ def log_arrival_parcel():
             parcel_status = ParcelStatus.query.filter_by(Parcel_ID=parcelID).first()
 
             if parcel_status:
-                # Update the status type and timestamp
-                parcel_status.Status_Type = updateStatus
+                # Update the status type based on new options
+                if updateStatus == "Verified":
+                    parcel_status.Status_Type = "Verified - Collected"
+                elif updateStatus == "Missing":
+                    parcel_status.Status_Type = "Verified - Missing"
+                else:
+                    parcel_status.Status_Type = "Verified - Damage"
+
                 parcel_status.Updated_by = current_user.Manager_ID  # Make sure this attribute exists
                 parcel_status.Updated_At = datetime.utcnow()
                 db.session.commit()
@@ -200,15 +206,13 @@ def log_arrival_parcel():
                 
             return redirect(url_for('parcel_manager.log_arrival_parcel'))
 
-
         except NoResultFound:
             pass
 
     return render_template(
         'ParcelManager/ParcelManagerLogArrivalParcel.html',
-        parcels = parcels,
-        statuses = statuses,
-        )
+        parcels=parcels
+    )
 
 
 @parcel_manager.route('/assign_parcel_to_locker', methods=['GET', 'POST'])
@@ -237,7 +241,6 @@ def assign_parcel_to_locker():
                 flash(f"Parcel {parcelID} added to the waitlist!", "info")
             else:
                 flash(f"Parcel {parcelID} is already in the waitlist!", "warning")
-
             return redirect(url_for('parcel_manager.assign_parcel_to_locker'))
 
         if not lockerID:
@@ -267,6 +270,13 @@ def assign_parcel_to_locker():
                 )
                 db.session.add(new_status)
 
+            # Remove parcel from waitlist
+            waitlist_entry = Waitlist.query.filter_by(Parcel_ID=parcelID).first()
+            if waitlist_entry:
+                db.session.delete(waitlist_entry)
+                db.session.commit()
+                flash(f"Parcel {parcelID} has been removed from the waitlist.", "info")
+
             db.session.commit()
             flash(f"Parcel {parcelID} assigned to Locker {lockerID} successfully!", "success")
         else:
@@ -275,7 +285,14 @@ def assign_parcel_to_locker():
         return redirect(url_for('parcel_manager.assign_parcel_to_locker'))
 
     # Handle GET requests - Fetch data
-    parcels = db.session.query(Parcel).join(ParcelStatus).filter(ParcelStatus.Status_Type == 'Verified').all()
+    parcels_waitlist = Waitlist.query.all()  # Fetch all waitlisted parcels
+    parcels_verified_collected = db.session.query(Parcel).join(ParcelStatus).filter(
+        ParcelStatus.Status_Type == 'Verified - Collected'
+    ).all()
+
+    # Combine the lists, with waitlist parcels first
+    parcels = [parcel.Parcel_ID for parcel in parcels_waitlist] + [parcel.Parcel_ID for parcel in parcels_verified_collected]
+
     lockers = SmartLocker.query.filter_by(Locker_Status='Available').all()
     locker_count = len(lockers)
 
@@ -283,6 +300,6 @@ def assign_parcel_to_locker():
         'ParcelManager/ParcelManagerAssignParcelToLocker.html',
         parcels=parcels,
         lockers=lockers,
-        locker_count=locker_count 
+        locker_count=locker_count
     )
 
