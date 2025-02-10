@@ -76,6 +76,41 @@ def submit_feedback():
 
     return render_template('StudentStaff/StudentStaffFeedback.html', feedbacks=feedbacks)
 
+@views.route('/receive_parcel', methods=['GET'])
+@login_required
+def receive_parcel():
+
+    # Check if the current user is a Student/Staff
+    if not isinstance(current_user, StudentStaff):
+        flash('Unauthorized access! Please log in as a Student/Staff.', category='error')
+        return redirect(url_for('auth.logout'))
+    
+    # Get the current user's received parcels
+    received_parcels = Parcel.query.filter_by(Recipient_User_ID=current_user.User_ID).all()
+
+    # Prepare data to display
+    parcel_info = []
+    for parcel in received_parcels:
+        # Get the latest status of the parcel
+        latest_status = ParcelStatus.query.filter_by(Parcel_ID=parcel.Parcel_ID) \
+                                         .order_by(ParcelStatus.Updated_At.desc()) \
+                                         .first()
+
+        if latest_status and latest_status.Status_Type == "Received":
+            # Get the locker information
+            locker = SmartLocker.query.get(parcel.Receive_Locker_ID)
+            if locker:
+                # Generate a random 5-digit OTP
+                otp = ''.join(random.choices(string.digits, k=5))
+                parcel_info.append({
+                    'parcel_id': parcel.Parcel_ID,
+                    'locker_id': locker.Locker_ID,
+                    'locker_location': locker.Locker_Location,
+                    'otp': otp  # Temporary OTP
+                })
+
+    return render_template('StudentStaff/StudentStaffReceiveParcel.html', parcel_info=parcel_info)
+
 
 @views.route('/send_parcel', methods=['GET', 'POST'])
 @login_required
