@@ -43,9 +43,9 @@
                     <td>
                         <select name="Update_Status" class="status-select">
                             <option disabled selected>Select Status</option>
-                            <option value="Verified">Verified - Collected</option>
-                            <option value="Missing">Verified - Missing</option>
-                            <option value="Damage">Verified - Damage</option>
+                            <option value="Verified - Collected">Verified - Collected</option>
+                            <option value="Verified - Missing">Verified - Missing</option>
+                            <option value="Verified - Damage">Verified - Damage</option>
                         </select>
                     </td>
                     <td>
@@ -57,11 +57,11 @@
                     </td>
                 </tr>
                 <input type="hidden" name="Parcel_ID" value="{{ parcel.Parcel_ID }}">
-            </form>
             {% endfor %}
         </tbody>
     </table>
     <button type="submit" class="update-button">Submit Verification</button>
+</form>
 </div>
 
 {% endblock %}
