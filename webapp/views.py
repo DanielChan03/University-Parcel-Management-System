@@ -82,15 +82,36 @@ def submit_feedback():
 
     return render_template('StudentStaff/StudentStaffFeedback.html', feedbacks=user_feedbacks)
 
-@views.route('/receive_parcel', methods=['GET'])
+@views.route('/receive_parcel', methods=['GET', 'POST'])
 @login_required
 def receive_parcel():
-
     # Check if the current user is a Student/Staff
     if not isinstance(current_user, StudentStaff):
         flash('Unauthorized access! Please log in as a Student/Staff.', category='error')
         return redirect(url_for('auth.logout'))
     
+    # Handle POST request (mark parcel as delivered)
+    if request.method == 'POST':
+        parcel_id = request.form.get('parcel_id')
+        if parcel_id:
+            try:
+                # Update parcel status to "Delivered"
+                new_status = ParcelStatus(
+                    Status_ID=f"STS{random.randint(10000000, 99999999)}",  # Generate unique status ID
+                    Parcel_ID=parcel_id,
+                    Status_Type="Delivered",
+                    Updated_by=current_user.User_ID,
+                    Updated_At=datetime.now()
+                )
+                db.session.add(new_status)
+                db.session.commit()
+                flash(f"Parcel {parcel_id} marked as delivered successfully!", "success")
+            except Exception as e:
+                db.session.rollback()
+                flash(f"Error: {str(e)}", "error")
+            return redirect(url_for('views.receive_parcel'))
+    
+    # Handle GET request (display parcels)
     # Get the current user's received parcels
     received_parcels = Parcel.query.filter_by(Recipient_User_ID=current_user.User_ID).all()
 
@@ -102,12 +123,12 @@ def receive_parcel():
                                          .order_by(ParcelStatus.Updated_At.desc()) \
                                          .first()
 
-        if latest_status and latest_status.Status_Type == "Received":
+        if latest_status and latest_status.Status_Type.startswith("Assigned to Locker"):
             # Get the locker information
             locker = SmartLocker.query.get(parcel.Receive_Locker_ID)
             if locker:
-                # Generate a random 5-digit OTP
-                otp = ''.join(random.choices(string.digits, k=5))
+                # Get OTP from session
+                otp = session.get('parcel_otps', {}).get(parcel.Parcel_ID, "OTP not found")
                 parcel_info.append({
                     'parcel_id': parcel.Parcel_ID,
                     'locker_id': locker.Locker_ID,
@@ -125,6 +146,8 @@ def send_parcel():
     universities = University.query.all()
     sender = StudentStaff.query.filter_by(User_ID=current_user.User_ID).first()
     sender_university_id = sender.University_ID  # Get sender's university ID
+
+    sent_parcels = Parcel.query.filter_by(Sender_User_ID=current_user.User_ID).all()
 
     if request.method == 'POST':
         sender_user_id = request.form['sender_user_id']
@@ -204,7 +227,7 @@ def send_parcel():
             Send_Locker_ID=send_locker_id,
             Receive_Locker_ID=None,
             Delivery_ID=None,  # Delivery_ID is now nullable
-            Parcel_Sent_at=datetime.utcnow(),
+            Parcel_Sent_at=datetime.now(),
             Send_Manager_ID=send_manager.Manager_ID,
             Receive_Manager_ID=receive_manager.Manager_ID
         )
@@ -222,7 +245,7 @@ def send_parcel():
             Parcel_ID=parcel_id,
             Status_Type="Registered",
             Updated_by=sender_user_id,  # The sender
-            Updated_At=datetime.utcnow()
+            Updated_At=datetime.now()
         )
         db.session.add(new_status)
         db.session.commit()
@@ -240,7 +263,8 @@ def send_parcel():
         'StudentStaff/SendParcel.html',
         user=sender,
         universities=universities,
-        sender_university_name=sender.get_university_name()
+        sender_university_name=sender.get_university_name(),
+        sent_parcels=sent_parcels
     )
 
 
@@ -274,9 +298,8 @@ def track_parcel():
 @views.route('/notifications', methods=['GET'])
 @login_required
 def notifications():
-    notifications = session.get('notifications', [])
-
-    notifications = [{'message': msg} for msg in notifications]
+    user_email = current_user.User_Email
+    notifications = [n for n in session.get('notifications', []) if n.get('recipient_email') == user_email]
 
     return render_template('StudentStaff/StudentStaffNotification.html', notifications=notifications)
 
@@ -299,7 +322,7 @@ def report_locker_issue():
             'issue_type': issue_type,
             'issue_description': issue_description,
             'reported_by': current_user.User_ID,
-            'reported_at': datetime.utcnow().isoformat()
+            'reported_at': datetime.now().isoformat()
         }
 
         session['locker_issues'].append(issue)
@@ -311,3 +334,23 @@ def report_locker_issue():
     # GET method (Render the form page)
     lockers = SmartLocker.query.all()
     return render_template('StudentStaff/ReportLockerIssue.html', lockers=lockers)
+
+
+@views.route('/student-staff/profile')
+@login_required
+def student_staff_profile():
+    # Ensure the user is a student or staff
+    if not isinstance(current_user, StudentStaff):
+        return redirect(url_for('unauthorized'))  # Redirect if not a student or staff
+
+    # Retrieve the student/staff's data from the database
+    student_staff_data = {
+        'User_ID': current_user.User_ID,
+        'User_Name': current_user.User_Name,
+        'User_Email': current_user.User_Email,
+        'User_Contact': current_user.User_Contact,
+        'University_Name': current_user.get_university_name(),
+        'University_Location': current_user.get_university_location(),
+    }
+
+    return render_template('StudentStaff/StudentStaffProfile.html', user=student_staff_data)

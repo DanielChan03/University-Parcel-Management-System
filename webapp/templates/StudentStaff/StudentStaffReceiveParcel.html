@@ -10,20 +10,39 @@
 <div class="receive-parcel-container">
     <h1>Receive Parcel</h1>
 
-    <!-- Parcel Information -->
-    <div class="parcel-list">
-        {% if parcel_info %}
-            {% for parcel in parcel_info %}
-                <div class="parcel-card">
-                    <h3>Parcel ID: {{ parcel.parcel_id }}</h3>
-                    <p><strong>Locker ID:</strong> {{ parcel.locker_id }}</p>
-                    <p><strong>Locker Location:</strong> {{ parcel.locker_location }}</p>
-                    <p><strong>OTP:</strong> {{ parcel.otp }}</p>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p class="no-parcels">No parcels available for receiving.</p>
-        {% endif %}
-    </div>
+    <!-- Parcel Information Table -->
+    <table class="parcel-table">
+        <thead>
+            <tr>
+                <th>Parcel ID</th>
+                <th>Locker ID</th>
+                <th>Locker Location</th>
+                <th>OTP</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if parcel_info %}
+                {% for parcel in parcel_info %}
+                    <tr>
+                        <td>{{ parcel.parcel_id }}</td>
+                        <td>{{ parcel.locker_id }}</td>
+                        <td>{{ parcel.locker_location }}</td>
+                        <td>{{ parcel.otp }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('views.receive_parcel') }}">
+                                <input type="hidden" name="parcel_id" value="{{ parcel.parcel_id }}">
+                                <button type="submit" class="confirm-button">Confirm Delivery</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" class="no-parcels">No parcels available for receiving.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

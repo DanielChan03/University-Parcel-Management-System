@@ -1,5 +1,6 @@
+/* Main container for the receive parcel page */
 .receive-parcel-container {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 50px auto;
     padding: 30px;
     background-color: #ffffff;
@@ -8,6 +9,7 @@
     font-family: 'Arial', sans-serif;
 }
 
+/* Page title */
 .receive-parcel-container h1 {
     text-align: center;
     margin-bottom: 30px;
@@ -16,40 +18,50 @@
     font-weight: 600;
 }
 
-.parcel-list {
+/* Parcel Table */
+.parcel-table {
+    width: 100%;
+    border-collapse: collapse;
     margin-top: 20px;
 }
 
-.parcel-card {
-    background-color: #f8f9fa;
-    padding: 20px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border-left: 6px solid #49b2c6;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+.parcel-table th,
+.parcel-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
-.parcel-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+.parcel-table th {
+    background-color: #49b2c6;
+    color: white;
 }
 
-.parcel-card h3 {
-    margin: 0 0 10px;
-    color: #34495e;
-    font-size: 1.2rem;
+.parcel-table tr:hover {
+    background-color: #f5f5f5;
 }
 
-.parcel-card p {
-    margin: 5px 0;
-    color: #2c3e50;
-    font-size: 1rem;
+/* Confirm Delivery Button */
+.confirm-button {
+    background-color: #49b2c6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
 }
 
+.confirm-button:hover {
+    background-color: #3a8e9e;
+}
+
+/* No Parcels Message */
 .no-parcels {
     text-align: center;
     color: #95a5a6;
     font-style: italic;
     font-size: 1.1rem;
+    padding: 20px;
 }

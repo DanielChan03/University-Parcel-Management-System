@@ -43,14 +43,8 @@
             </svg> <!-- Close Icon -->
         </button>    
         <ul>
-            <li><a href="/">Home</a></li>
+            <li><a href="{{ url_for('views.student_staff_profile') }}">Profile</a></li>
             <li><a href="{{ url_for('views.dashboard') }}">Dashboard</a></li>
-            <li><a href="{{ url_for('views.receive_parcel') }}">Receive Parcel</a></li>
-            <li><a href="{{ url_for('views.send_parcel') }}">Send Parcel</a></li>
-            <li><a href="{{ url_for('views.track_parcel') }}">Track Parcel</a></li>
-            <li><a href="{{ url_for('views.notifications') }}">Notifications</a></li>
-            <li><a href="{{ url_for('views.report_locker_issue') }}">Report Locker Issue</a></li>
-            <li><a href="{{ url_for('views.submit_feedback') }}">Feedback</a></li>
             <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
         </ul>
     </div>

@@ -1,23 +1,13 @@
-/* Scope styles only to SendParcel.html */
 .send-parcel-container {
     background-color: #f4f4f4;
     padding: 20px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
     min-height: 100vh;
 }
 
-.send-parcel-container h2 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
-    display: block;  /* Ensure it's visible */
-    width: 100%;
-}
-
-
-/* Form Container */
+/* Form Styling */
 .send-parcel-container form {
     background-color: #fff;
     padding: 20px;
@@ -26,27 +16,27 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Form Header */
-.send-parcel-container h2 {
+.form-title {
     text-align: center;
     color: #333;
     margin-bottom: 20px;
 }
 
-/* Label Styling */
-.send-parcel-container label {
-    font-size: 16px;
-    margin: 10px 0 5px;
-    display: block;
-    color: #555;
+.form-group {
+    margin-bottom: 15px;
 }
 
-/* Input and Select Fields */
+.send-parcel-container label {
+    font-size: 16px;
+    display: block;
+    color: #555;
+    margin-bottom: 5px;
+}
+
 .send-parcel-container input[type="text"], 
 .send-parcel-container select {
     width: 100%;
     padding: 10px;
-    margin: 8px 0 15px 0;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 16px;
@@ -68,17 +58,44 @@
     background-color: #45a049;
 }
 
-/* Information Text */
-.send-parcel-container p {
-    font-size: 14px;
-    color: #666;
-    text-align: center;
-    margin-bottom: 20px;
+/* Sent Parcels Table */
+.sent-parcels-table {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    width: 80%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sent-parcels-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sent-parcels-table th,
+.sent-parcels-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.sent-parcels-table th {
+    background-color: #f4f4f4;
+    font-weight: 600;
+}
+
+.sent-parcels-table tbody tr:hover {
+    background-color: #f9f9f9;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
     .send-parcel-container form {
         width: 90%;
+    }
+
+    .sent-parcels-table {
+        width: 100%;
     }
 }

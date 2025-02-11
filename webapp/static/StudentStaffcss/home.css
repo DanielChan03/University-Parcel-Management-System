@@ -4,44 +4,11 @@
     text-align: center;
 }
 
-.tracking-section {
-    background: #f8f8f8;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-}
-
-.tracking-section h1 {
-    margin-bottom: 1rem;
-    font-size: 2rem;
-}
-
-#tracking-input {
-    padding: 0.5rem;
-    width: 70%;
-    margin-right: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-#track-btn {
-    padding: 0.5rem 1rem;
-    background: red;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#track-btn:hover {
-    background: darkred;
-}
-
 .actions {
     display: flex;
     justify-content: center;
     gap: 2rem;
+    margin-top: 2rem;
 }
 
 .action {

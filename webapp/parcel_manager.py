@@ -291,7 +291,7 @@ def organize_parcel():
                         Parcel_ID=parcel.Parcel_ID,
                         Status_Type="Ready to Pickup",
                         Updated_by=current_user.Manager_ID,
-                        Updated_At=datetime.utcnow()
+                        Updated_At=datetime.now()
                     )
                     db.session.add(new_status)
 
@@ -470,6 +470,14 @@ def assign_parcel_to_locker():
                 # Assign locker to parcel
                 locker.Locker_Status = "Occupied"
                 parcel.Receive_Locker_ID = locker.Locker_ID
+
+                otp = ''.join(random.choices(string.digits, k=6))
+
+                # Store OTP in the session
+                if 'parcel_otps' not in session:
+                    session['parcel_otps'] = {}
+                session['parcel_otps'][parcel_id] = otp
+                session.modified = True  # Ensure session is saved
 
                 # Generate a unique status ID in the format APLXXXXXXXX
                 def generate_unique_status_id():

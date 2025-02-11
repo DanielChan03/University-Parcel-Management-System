@@ -8,38 +8,66 @@
 
 {% block content %}
 <div class="send-parcel-container">
-  
     <form action="{{ url_for('views.send_parcel') }}" method="POST">
         <h2 class="form-title">Send a Parcel</h2>
 
-        
         <!-- Sender Details -->
-        <label for="sender_name">Sender's Name</label>
-        <input type="text" id="sender_name" name="sender_name" value="{{ user.User_Name }}" readonly>
+        <div class="form-group">
+            <label for="sender_name">Sender's Name</label>
+            <input type="text" id="sender_name" name="sender_name" value="{{ user.User_Name }}" readonly>
+        </div>
 
-        <label for="sender_university">Sender's University</label>
-        <input type="text" id="sender_university" name="sender_university" value="{{ sender_university_name }}" readonly>
+        <div class="form-group">
+            <label for="sender_university">Sender's University</label>
+            <input type="text" id="sender_university" name="sender_university" value="{{ sender_university_name }}" readonly>
+        </div>
 
         <input type="hidden" name="sender_user_id" value="{{ user.User_ID }}">
         <input type="hidden" name="sender_university_id" value="{{ user.University_ID }}">
 
         <!-- Receiver Details -->
-        <label for="receiver_university">Receiver's University</label>
-        <select id="receiver_university" name="receiver_university" required>
-            <option value="" disabled selected>Select a university</option>
-            {% for university in universities %}
-                {% if university.University_ID != user.University_ID %}
-                    <option value="{{ university.University_ID }}">{{ university.University_Name }}</option>
-                {% endif %}
-            {% endfor %}
-        </select>
+        <div class="form-group">
+            <label for="receiver_university">Receiver's University</label>
+            <select id="receiver_university" name="receiver_university" required>
+                <option value="" disabled selected>Select a university</option>
+                {% for university in universities %}
+                    {% if university.University_ID != user.University_ID %}
+                        <option value="{{ university.University_ID }}">{{ university.University_Name }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
 
-        <label for="receiver_identifier">Receiver's Name or User ID</label>
-        <input type="text" id="receiver_identifier" name="receiver_identifier" required>
+        <div class="form-group">
+            <label for="receiver_identifier">Receiver's Name or User ID</label>
+            <input type="text" id="receiver_identifier" name="receiver_identifier" required>
+        </div>
 
         <!-- Submit Button -->
         <button type="submit">Send Parcel</button>
-
     </form>
+
+    <!-- Sent Parcels Table -->
+    <div class="sent-parcels-table">
+        <h2>Sent Parcels</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Parcel ID</th>
+                    <th>Recipient User ID</th>
+                    <th>Sent At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for parcel in sent_parcels %}
+                    <tr>
+                        <td>{{ parcel.Parcel_ID }}</td>
+                        <td>{{ parcel.Recipient_User_ID }}</td>
+                        <td>{{ parcel.Parcel_Sent_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
