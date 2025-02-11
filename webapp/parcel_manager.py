@@ -450,6 +450,7 @@ def log_arrival_parcel():
 
 
 
+
 @parcel_manager.route('/assign_parcel_to_locker', methods=['GET', 'POST'])
 def assign_parcel_to_locker():
     if request.method == 'POST':  # Handle form submission
