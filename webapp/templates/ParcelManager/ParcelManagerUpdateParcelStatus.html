@@ -33,10 +33,9 @@
                             <td>{{ parcel.recipient.User_Name }}</td>
                             <td>
                                 <select name="Update_Status" class="status-select">
-                                        <option disabled selected> {{ parcel.status }} </option>
-                                        <option value = "In Transit" {% if status == "In Transit" %}selected{% endif %}>In Transit</option>
-                                        <option value = "Arrived" {% if status == "Arrived" %}selected{% endif %}>Arrived</option>
-                                        <option value = "Received" {% if status == "Received" %}selected{% endif %}>Received</option>
+                                        <option disabled selected> </option>
+                                        <option value = "In Transit">In Transit</option>
+                                        <option value = "Arrived">Arrived</option>
                                 </select>
                             </td>
                             <td>
