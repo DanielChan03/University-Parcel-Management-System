@@ -15,13 +15,17 @@
     <!-- Welcome Card -->
     <div class="welcome-card">
         <h2>Welcome, {{ parcel_manager.Manager_Name }}!</h2>
+        <img src="{{ url_for('static', filename='parcel_manager.png') }}" alt="Welcome Image" class="welcome-image">
     </div>
     
     <!-- Notification Card -->
     <div class="notification-card">
         <h2>Notification:</h2>
+        <br>
         <ul>
             <li>Messages Sent: {{messages_sent}}</li>
+            <br>
+            <br>
             <li>Messages Received: {{messages_received}}</li>
         </ul>
     </div>
