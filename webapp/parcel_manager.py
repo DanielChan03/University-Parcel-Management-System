@@ -122,7 +122,10 @@ def organize_parcel():
 @parcel_manager.route('/update_parcel_status', methods=['GET', 'POST'])
 def update_parcel_status():
     # Fetch all parcels from database
-    parcels = Parcel.query.all()
+    verifiedCollected = db.session.query(Parcel).join(ParcelStatus).filter(ParcelStatus.Status_Type == 'Verified - Collected').all()
+    inTransit = db.session.query(Parcel).join(ParcelStatus).filter(ParcelStatus.Status_Type == 'In Transit').all()
+    parcels = verifiedCollected + inTransit
+
     statuses = ParcelStatus.query.all()
 
 
@@ -245,7 +248,7 @@ def assign_parcel_to_locker():
 
         if parcel and locker:
             locker.Locker_Status = "Occupied"
-            parcel.Send_Locker_ID = locker.Locker_ID
+            parcel.Receive_Locker_ID = locker.Locker_ID
 
             parcel_status = ParcelStatus.query.filter_by(Parcel_ID=parcelID).first()
             new_status_text = f"Assigned to Locker {locker.Locker_ID}"
@@ -281,7 +284,7 @@ def assign_parcel_to_locker():
     # Handle GET requests - Fetch data
     parcels_waitlist = Waitlist.query.all()  # Fetch all waitlisted parcels
     parcels_verified_collected = db.session.query(Parcel).join(ParcelStatus).filter(
-        ParcelStatus.Status_Type == 'Verified - Collected'
+        ParcelStatus.Status_Type == 'Arrived'
     ).all()
 
     # Combine the lists, with waitlist parcels first
