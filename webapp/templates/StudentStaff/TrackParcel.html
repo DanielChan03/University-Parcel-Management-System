@@ -24,8 +24,23 @@
         <div class="parcel-info">
             <h2>Parcel Details</h2>
             <p><strong>Parcel ID:</strong> {{ parcel_info.parcel_id }}</p>
-            <p><strong>Status:</strong> {{ parcel_info.status_type }}</p>
-            <p><strong>Last Updated:</strong> {{ parcel_info.updated_at }}</p>
+            <h3>Status Updates</h3>
+            <table class="status-table">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Updated At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for update in parcel_info.status_updates %}
+                        <tr>
+                            <td>{{ update.status_type }}</td>
+                            <td>{{ update.updated_at }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     {% elif error %}
         <div class="error-message">
