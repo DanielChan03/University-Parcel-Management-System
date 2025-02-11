@@ -173,20 +173,24 @@ def send_parcel():
         while Parcel.query.filter_by(Parcel_ID=parcel_id).first():
             parcel_id = f"PAR{''.join(random.choices('0123456789', k=8))}"
 
-        # Get sender's manager
-        sender_university_name = sender.get_university_name()
-        send_manager = ParcelManager.query.filter_by(Manager_Work_Branch=sender_university_name).first()
+        # Get sender's manager by comparing the prefix of University_ID
+        sender_university_prefix = sender.University_ID[:4]  # Extract prefix from University_ID (e.g., "MMUM")
+        send_manager = ParcelManager.query.filter(
+            ParcelManager.Manager_Work_Branch.startswith(sender_university_prefix)
+        ).first()
 
         if send_manager is None:
             flash('No manager found for the sender university. Please contact support.', 'error')
             return redirect(url_for('views.send_parcel'))
 
-        # Get receiver's university name
+        # Get receiver's university prefix
         receiver_university = University.query.get(receiver_university_id)
-        receiver_university_name = receiver_university.University_Name
+        receiver_university_prefix = receiver_university.University_ID[:4]  # Extract prefix from University_ID
 
-        # Get receiver's manager
-        receive_manager = ParcelManager.query.filter_by(Manager_Work_Branch=receiver_university_name).first()
+        # Get receiver's manager by comparing the prefix of University_ID
+        receive_manager = ParcelManager.query.filter(
+            ParcelManager.Manager_Work_Branch.startswith(receiver_university_prefix)
+        ).first()
 
         if receive_manager is None:
             flash('No manager found for the receiver university. Please contact support.', 'error')
