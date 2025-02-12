@@ -23,11 +23,11 @@
         </button>
         <nav class="courier-navbar">
             <span style="color: white;">TrackCourier │ </span> 
-            <a href="{{ url_for('courier.courier_dashboard') }}">Dashboard</a>
-            <a href="{{ url_for('courier.collect_parcel') }}">Collect Parcel</a>
-            <a href="{{url_for('courier.manage_parcel_status')}}">Manage Parcel Status</a>
-            <a href="{{ url_for('courier.notifications_page') }}">Notifications</a>
-            <a href="{{ url_for('courier.report_parcel') }}">Report Delivery Issue</a>
+            <a href="{{ url_for('courier_dashboard.courier_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('collect_parcel.collect_parcel') }}">Collect Parcel</a>
+            <a href="{{url_for('manage_status.manage_parcel_status')}}">Manage Parcel Status</a>
+            <a href="{{ url_for('notifications.notifications_page') }}">Notifications</a>
+            <a href="{{ url_for('report_parcel_issue.report_parcel') }}">Report Delivery Issue</a>
         </nav>
     </header>
 
@@ -39,8 +39,8 @@
             </svg> <!-- Close Icon -->
         </button>
         <ul>
-            <li><a href="{{ url_for('courier.courier_profile') }}">Profile</a></li>
-            <li><a href="{{ url_for('courier.courier_dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('courier_profile.courier_profile') }}">Profile</a></li>
+            <li><a href="{{ url_for('courier_dashboard.courier_dashboard') }}">Dashboard</a></li>
             <li><a href="{{ url_for('courier_auth.courier_logout') }}">Logout</a></li>
         </ul>
     </div>
