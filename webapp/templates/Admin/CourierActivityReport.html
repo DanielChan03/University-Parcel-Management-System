@@ -1,0 +1,48 @@
+{% extends "Admin/AdminBase.html" %}
+
+{% block title %}Courier Activity Report{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='Admincss/CourierActivityReport.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="report-container">
+    <!-- Header -->
+    <div class="report-header">
+        <h1>Courier Activity Report</h1>
+        <p>{{ month_name }} {{ year }}</p>  <!-- Dynamic month and year -->
+    </div>
+
+    <!-- Summary Section -->
+    <div class="summary-section">
+        <h2>Courier Performance</h2>
+        <table class="report-table">
+            <thead>
+                <tr>
+                    <th>Courier Name</th>
+                    <th>Total Deliveries</th>
+                    <th>Average Delivery Time (Days)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for courier in courier_activity %}
+                <tr>
+                    <td>{{ courier.Courier_Name }}</td>
+                    <td>{{ courier.total_deliveries }}</td>
+                    <td>{{ courier.avg_delivery_time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="report-footer">
+        <p>Generated on: {{ current_date }}</p>
+    </div>
+
+    <!-- Back Button -->
+    <a href="{{ url_for('admin.generate_report') }}" class="btn-back">Back</a>
+</div>
+{% endblock %}
