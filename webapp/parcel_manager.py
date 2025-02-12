@@ -387,6 +387,40 @@ def monitor_locker_issue():
         lockerFilter=lockerFilter,
     )
 
+@parcel_manager.route('/update_locker_status', methods=['POST'])
+@login_required
+def update_locker_status():
+    if not isinstance(current_user, ParcelManager):
+        flash('Unauthorized access!', category='error')
+        return redirect(url_for('parcel_manager_auth.parcel_manager_login'))
+
+    locker_id = request.form.get('locker_id')
+    new_status = request.form.get('new_status')
+
+    if not locker_id or not new_status:
+        flash('Missing required fields!', category='error')
+        return redirect(url_for('parcel_manager.monitor_locker_issue'))
+
+    # Check if the locker belongs to the manager's branch
+    locker = SmartLocker.query.filter(
+        SmartLocker.Locker_ID == locker_id,
+        SmartLocker.Locker_ID.startswith(current_user.Manager_Work_Branch)
+    ).first()
+
+    if not locker:
+        flash('Locker not found or unauthorized!', category='error')
+        return redirect(url_for('parcel_manager.monitor_locker_issue'))
+
+    try:
+        locker.Locker_Status = new_status
+        db.session.commit()
+        flash('Locker status updated successfully!', category='success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error updating status: {str(e)}', category='error')
+
+    return redirect(url_for('parcel_manager.monitor_locker_issue'))
+
 
 @parcel_manager.route('/log_arrival_parcel', methods=['GET', 'POST'])
 @login_required
