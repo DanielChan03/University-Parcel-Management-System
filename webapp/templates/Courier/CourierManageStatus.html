@@ -31,7 +31,7 @@
                         <td>{{ parcel.Current_Status }}</td>
                         <td>
                             <!-- Add a form for each parcel -->
-                            <form method="POST" action="{{ url_for('courier.manage_parcel_status') }}" class="status-form">
+                            <form method="POST" action="{{ url_for('manage_status.manage_parcel_status') }}" class="status-form">
                                 <input type="hidden" name="Parcel_ID" value="{{ parcel.Parcel_ID }}">
                                 <select name="Update_Status" class="status-select"
                                     {% if parcel.Current_Status == 'Verified' or parcel.Current_Status.startswith('Reported - ') %} disabled {% endif %} 
