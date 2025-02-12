@@ -119,6 +119,9 @@ def receive_parcel():
         parcel_id = request.form.get('parcel_id')
         if parcel_id:
             try:
+                parcel = Parcel.query.get(parcel_id)
+                locker = SmartLocker.query.get(parcel.Receive_Locker_ID)
+
                 new_status = ParcelStatus(
                     Status_ID=f"STS{random.randint(10000000, 99999999)}",  # Generate unique status ID
                     Parcel_ID=parcel_id,
@@ -127,6 +130,8 @@ def receive_parcel():
                     Updated_At=datetime.now()
                 )
                 db.session.add(new_status)
+                
+                locker.Locker_Status = "Available"
                 db.session.commit()
                 flash(f"Parcel {parcel_id} marked as delivered successfully!", "success")
             except Exception as e:
