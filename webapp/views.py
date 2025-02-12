@@ -130,7 +130,7 @@ def receive_parcel():
                     Updated_At=datetime.now()
                 )
                 db.session.add(new_status)
-                
+
                 locker.Locker_Status = "Available"
                 db.session.commit()
                 flash(f"Parcel {parcel_id} marked as delivered successfully!", "success")
@@ -323,27 +323,26 @@ def report_locker_issue():
     if request.method == 'POST':
         locker_number = request.form['locker_number']
         issue_type = request.form['issue_type']
-        issue_description = request.form.get('issue_description', '')
 
-        # Store the issue in the session
-        if 'locker_issues' not in session:
-            session['locker_issues'] = []  # Initialize the list if not present
+        # 查找 Locker
+        locker = SmartLocker.query.get(locker_number)
+        if not locker:
+            flash("Error: Locker not found.", "error")
+            return redirect(url_for('views.report_locker_issue'))
 
-        issue = {
-            'locker_number': locker_number,
-            'issue_type': issue_type,
-            'issue_description': issue_description,
-            'reported_by': current_user.User_ID,
-            'reported_at': datetime.now().isoformat()
-        }
+        # 更新 Locker 状态
+        locker.Locker_Status = "Under Maintenance"
 
-        session['locker_issues'].append(issue)
-        session.modified = True  # Ensure the session is marked as modified
+        try:
+            db.session.commit()
+            flash(f"Locker {locker_number} is now under maintenance.", "success")
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error updating locker status: {str(e)}", "error")
 
-        flash('Your issue has been reported successfully.', 'success')
         return redirect(url_for('views.home'))
 
-    # GET method (Render the form page)
+    # 获取所有 Locker
     lockers = SmartLocker.query.all()
     return render_template('StudentStaff/ReportLockerIssue.html', lockers=lockers)
 
