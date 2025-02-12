@@ -89,10 +89,36 @@ def receive_parcel():
     if not isinstance(current_user, StudentStaff):
         flash('Unauthorized access! Please log in as a Student/Staff.', category='error')
         return redirect(url_for('auth.logout'))
+    # Get the current user's received parcels
+    received_parcels = Parcel.query.filter_by(Recipient_User_ID=current_user.User_ID).all()
+
+    # Prepare data to display
+    parcel_info = []
+    for parcel in received_parcels:
+        # Get the latest status of the parcel
+        latest_status = ParcelStatus.query.filter_by(Parcel_ID=parcel.Parcel_ID) \
+                                        .order_by(ParcelStatus.Updated_At.desc()) \
+                                        .first()
+
+        if latest_status and latest_status.Status_Type.startswith("Assigned to Locker"):
+            # Get the locker information
+            locker = SmartLocker.query.get(parcel.Receive_Locker_ID)
+            if locker:
+                # Get OTP from session
+                otp = session.get('parcel_otps', {}).get(parcel.Parcel_ID, "OTP not found")
+                parcel_info.append({
+                    'parcel_id': parcel.Parcel_ID,
+                    'locker_id': locker.Locker_ID,
+                    'locker_location': locker.Locker_Location,
+                    'otp': otp  # Temporary OTP
+                })
+
     
     # Handle POST request (mark parcel as delivered)
     if request.method == 'POST':
         parcel_id = request.form.get('parcel_id')
+        # Get OTP from session
+
         if parcel_id:
             try:
                 # Update parcel status to "Delivered"
@@ -137,6 +163,7 @@ def receive_parcel():
                 })
 
     return render_template('StudentStaff/StudentStaffReceiveParcel.html', parcel_info=parcel_info)
+
 
 
 @views.route('/send_parcel', methods=['GET', 'POST'])
