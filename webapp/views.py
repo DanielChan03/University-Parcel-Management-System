@@ -17,6 +17,7 @@ def home():
 @login_required
 def dashboard():
     user_id = current_user.User_ID
+    user_email = current_user.User_Email
 
     sent_parcels = Parcel.query.filter_by(Sender_User_ID=user_id).all()
     received_parcels = Parcel.query.filter_by(Recipient_User_ID=user_id).all()
@@ -29,7 +30,7 @@ def dashboard():
     not_responded_feedback = sum(1 for feedback in feedbacks if feedback['admin_response'] == 'Not Responded')
 
     notifications = session.get('notifications', [])
-    notifications = [{'message': msg} for msg in notifications]
+    filtered_notifications = [n for n in notifications if n.get('recipient_email') == user_email]
 
 
 
@@ -40,7 +41,7 @@ def dashboard():
         total_received_parcels=total_received_parcels,
         pending_parcels=pending_parcels,
         not_responded_feedback=not_responded_feedback,
-        notifications=notifications
+        notifications=filtered_notifications
     )
 
 
@@ -258,7 +259,19 @@ def send_parcel():
         # Notify the sender
         if 'notifications' not in session:
             session['notifications'] = []
-        session['notifications'].append(f"New parcel sent! Tracking Number: {parcel_id}. Please place it in Locker ID: {send_locker_id}.")
+
+        sender_notification = {
+            'recipient_email': current_user.User_Email,
+            'message': f"New parcel sent! Tracking Number: {parcel_id}. Please place it in Locker ID: {send_locker_id}."
+        }
+        session['notifications'].append(sender_notification)
+
+        receiver_notification = {
+            'recipient_email': receiver.User_Email,
+            'message': f"A parcel has been sent to you! Tracking Number: {parcel_id}."
+        }
+        session['notifications'].append(receiver_notification)
+
         session.modified = True
 
         flash(f'Your parcel has been sent. Please place it in Locker ID: {send_locker_id}.', 'success')
