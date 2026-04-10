@@ -41,7 +41,7 @@ Students and Staff can:
 
 ---
 
-### 4. Real-Time Tracking
+### 4. Real-Time Tracking (In Session)
 - Continuous status updates ensure transparency and accuracy  
 - Users can track parcel progress anytime  
 
