@@ -111,11 +111,13 @@ http://127.0.0.1:5000/admin/admin-login
 ```
 
 ## 🔐 Default Login Credentials
-Role	Email	Password
-Admin	john.doe@gmail.com	JohnDOE@12345
-Parcel Manager	wentao.woon@trackiq.com	password123
-Student / Staff	tan.weiling@mmu.edu.my	password123
-Courier	daniel.chan@trackiq	password123
+
+| Role            | Email                        | Password        |
+|-----------------|------------------------------|-----------------|
+| Admin           | john.doe@gmail.com           | JohnDOE@12345   |
+| Parcel Manager  | wentao.woon@trackiq.com      | password123     |
+| Student / Staff | tan.weiling@mmu.edu.my       | password123     |
+| Courier         | daniel.chan@trackiq.com      | password123     |
 
 
 📁 Project Structure 
@@ -126,7 +128,7 @@ UPMS/
 ├── main.py
 ├── instance
 ├── webapp/
-       ├── models/
+       ├── model_py_codes
        ├── templates/
        ├── static/
 ├── environment.yml
