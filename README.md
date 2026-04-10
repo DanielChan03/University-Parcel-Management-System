@@ -59,30 +59,36 @@ Check version:
 python3 --version
 ```
 
-✔️ Install all the dependencies 
+✔️ Install all the dependencies provided.
 Install using environment.yml file:
 
 ```bash
 conda env create -f environment.yml
 ```
 
-### 🚀 How to Run the System
+## 🚀 How to Run the System
 Follow these steps carefully:
-1. Unzip the Project Folder
-Extract the downloaded ZIP file.
-2. Navigate to Project Directory
+1. Navigate to Project Directory
 Open terminal and move into the project folder:
+
+```bash
 cd your-project-folder-name
-3. Run the Application
+```
+2. Run the Application
 Start the Flask server:
+
+```bash
 python main.py
-4. Open in Browser
+```
+
+3. Open in Browser
 After running the server, open:
+
 ```bash
 http://127.0.0.1:5000
 ```
 
-#### 👤 User Login Guide
+## 👤 User Login Guide
 1. 🧑‍🎓 Student / Staff
 Go to homepage login
 Enter your email and password directly
@@ -104,7 +110,7 @@ http://127.0.0.1:5000/courier/courier-login
 http://127.0.0.1:5000/admin/admin-login
 ```
 
-🔐 Default Login Credentials
+## 🔐 Default Login Credentials
 Role	Email	Password
 Admin	john.doe@gmail.com	JohnDOE@12345
 Parcel Manager	wentao.woon@trackiq.com	password123
@@ -113,15 +119,19 @@ Courier	daniel.chan@trackiq	password123
 
 
 📁 Project Structure 
+
+```bash
 UPMS/
 │
 ├── main.py
-├── app/
-├── models/
-├── templates/
-├── static/
+├── instance
+├── webapp/
+       ├── models/
+       ├── templates/
+       ├── static/
 ├── environment.yml
 └── README.md
+```
 
 ## 📌 Notes
 Ensure Flask is installed before running the system
